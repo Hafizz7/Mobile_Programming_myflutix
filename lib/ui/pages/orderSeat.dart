@@ -55,7 +55,7 @@ class _OrderSeatState extends State<OrderSeat> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.yellow,
                 image: const DecorationImage(
-                    image: AssetImage("assets/Vextor 65.png"),
+                    image: AssetImage("assets/Vector 65.png"),
                     fit: BoxFit.cover),
               ),
               ),
