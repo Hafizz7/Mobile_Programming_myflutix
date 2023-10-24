@@ -64,7 +64,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:myflutix/ui/pages/pages.dart';
+import 'package:myflutix/ui/pages/orderSeat.dart';
 
 
 void main() {
