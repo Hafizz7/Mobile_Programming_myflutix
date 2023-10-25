@@ -8,6 +8,7 @@ class OrderSeat extends StatefulWidget {
 }
 
 class _OrderSeatState extends State<OrderSeat> {
+  int selectedJamIndex = -1;
   List<daftarKursi> daftarkursiku = [
     daftarKursi(nomorKursi: "A1", statusKursi: "Kebeli"),
     daftarKursi(nomorKursi: "A2", statusKursi: "Kebeli"),
@@ -46,6 +47,12 @@ class _OrderSeatState extends State<OrderSeat> {
     daftarKursi(nomorKursi: "E5", statusKursi: "Kebeli"),
     daftarKursi(nomorKursi: "E6", statusKursi: "Kebeli"),
   ];
+  List<jamNonton> jamTonton = [
+    jamNonton(jam: "11:00"),
+    jamNonton(jam: "13:00"),
+    jamNonton(jam: "14:30"),
+    jamNonton(jam: "18:00"),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +68,7 @@ class _OrderSeatState extends State<OrderSeat> {
                   alignment: Alignment.center,
                   children: [
                     Positioned(
-                      left: -8, // Mengatur posisi ikon dari sisi kiri
+                      left: -8, 
                       child: IconButton(
                         onPressed: () {},
                         icon: Icon(Icons.arrow_circle_left_outlined),
@@ -118,6 +125,7 @@ class _OrderSeatState extends State<OrderSeat> {
                   },
                 ),
               ),
+              SizedBox(height: 10),
               Container(
                 height: MediaQuery.of(context).size.height * 0.04,
                 width: MediaQuery.of(context).size.width * 0.26,
@@ -136,9 +144,9 @@ class _OrderSeatState extends State<OrderSeat> {
                     Container(
                       margin: EdgeInsets.only(left: 5),
                       width: MediaQuery.of(context).size.width * 0.14,
-                      height: 20,                      
+                      height: 20,
                       child: Align(
-                         alignment: Alignment.centerLeft,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           'Available',
                           style: TextStyle(
@@ -162,9 +170,9 @@ class _OrderSeatState extends State<OrderSeat> {
                     Container(
                       margin: EdgeInsets.only(left: 5),
                       width: MediaQuery.of(context).size.width * 0.14,
-                      height: 20,                      
+                      height: 20,
                       child: Align(
-                         alignment: Alignment.centerLeft,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           'Reserved',
                           style: TextStyle(
@@ -188,9 +196,9 @@ class _OrderSeatState extends State<OrderSeat> {
                     Container(
                       margin: EdgeInsets.only(left: 5),
                       width: MediaQuery.of(context).size.width * 0.14,
-                      height: 20,                      
+                      height: 20,
                       child: Align(
-                         alignment: Alignment.centerLeft,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           'Selected',
                           style: TextStyle(
@@ -206,23 +214,109 @@ class _OrderSeatState extends State<OrderSeat> {
                   ],
                 ),
               ),
+              SizedBox(height: 10),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.26,
+                child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    childAspectRatio: 2,
+                  ),
+                  itemCount: jamTonton.length,
+                  itemBuilder: (_, i) {
+                    final isItemSelected = selectedJamIndex == i;
 
-              Container(
-                height: MediaQuery.of(context).size.height * 0.10,
-                width: MediaQuery.of(context).size.width * 0.26,
-                color: Colors.orange,
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          if (isItemSelected) {
+                            // Jika item sudah dipilih, batalkan pemilihan
+                            selectedJamIndex = -1;
+                          } else {
+                            // Jika item belum dipilih, pilih item ini dan batalkan pemilihan yang sebelumnya
+                            selectedJamIndex = i;
+                          }
+                        });
+                      },
+                      child: buildContentItems(jamTonton[i],
+                          isItemSelected: isItemSelected),
+                    );
+                  },
+                ),
               ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.10,
-                width: MediaQuery.of(context).size.width * 0.26,
-                color: Colors.yellow,
-              ),
+              Padding(                
+                padding: const EdgeInsets.only(left: 50,right: 50,top: 30),
+                child: InkWell(
+                  onTap: (){
+                    setState(() {
+                      
+                    });
+                  },
+                  child: InkWell(
+                    onTap: (){
+                      setState(() {
+                        
+                      });
+                    },
+                    child: Container(                  
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      decoration: ShapeDecoration(
+                        color: Color(0xFF6558F5),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Buy Ticket IDR 75.000',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'Raleway',
+                            fontWeight: FontWeight.w500,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
   }
+}
+
+Widget buildContentItems(jamNonton item, {bool isItemSelected = false}) {
+  return Container(
+    child: Padding(
+      padding: const EdgeInsets.all(9.0),
+      child: Container(
+        color: isItemSelected ? Color(0xFF6558F5) : Color(0xFFD9D9D9),
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            '${item.jam}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontFamily: 'Raleway',
+              fontWeight: FontWeight.w500,
+              height: 0,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 Widget buildContentItem(daftarKursi item) {
@@ -263,4 +357,10 @@ class daftarKursi {
   void toggleEnlarged() {
     slect = !slect;
   }
+}
+
+class jamNonton {
+  final String jam;
+
+  jamNonton({required this.jam});
 }
