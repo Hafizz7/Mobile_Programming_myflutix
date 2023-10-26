@@ -62,12 +62,20 @@
 //   }
 // }
 
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:myflutix/ui/pages/TicketSuccess.dart';
+import 'package:myflutix/ui/pages/WalletTopup.dart';
+import 'package:myflutix/ui/pages/checkout.dart';
+import 'package:myflutix/ui/pages/checkoutFail.dart';
+import 'package:myflutix/ui/pages/checkoutSucces.dart';
 import 'package:myflutix/ui/pages/orderSeat.dart';
 
 
-void main() {
+void main() async{
+  // WidgetsFlutterBinding.ensureInitialized();
+  // // Melakukan inisialisasi Firebase saat aplikasi dijalankan.
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -85,8 +93,12 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/' :(context) => const OrderSeat(),        
+        '/checkOut' :(context) => const checkOut(),           
+        '/checkOutFail' :(context) => const checkOutFail(),           
+        '/checkOutSucces' :(context) => const CheckoutSucces(),   
+        '/MovieTicketSuccessScreen' :(context) => TopupPage(),   
       },
-      initialRoute: '/',
+      initialRoute: '/checkOut',
     );
   }
 }

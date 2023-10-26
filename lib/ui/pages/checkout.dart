@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/ui/pages/checkoutFail.dart';
 
 class checkOut extends StatefulWidget {
   const checkOut({super.key});
@@ -50,14 +51,14 @@ class _checkOutState extends State<checkOut> {
                 SizedBox(height: 20),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.35,
-                  width: MediaQuery.of(context).size.width * 1,
+                  // width: MediaQuery.of(context).size.width * 1,
                   // color: Colors.amber,
                   child: Row(
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height * 0.4,
                         width: MediaQuery.of(context).size.width * 0.42,
-                      // 
+                        //
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: const DecorationImage(
@@ -66,81 +67,99 @@ class _checkOutState extends State<checkOut> {
                         ),
                       ),
                       SizedBox(width: 8),
-                      Container(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 16),
-                            //Judul Film
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.04,
-                              width: MediaQuery.of(context).size.width * 0.46,
-                              child: const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Avatar : The Way Of Water',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontFamily: 'Raleway',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // genre film
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.04,
-                              width: MediaQuery.of(context).size.width * 0.46,
-                              child: const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Fantasy/Action - English',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontFamily: 'Raleway',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.04,
-                              width: MediaQuery.of(context).size.width * 0.46,
-                              child: const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  '3h 10min',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontFamily: 'Raleway',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.04,
-                                width: MediaQuery.of(context).size.width * 0.46,
-                                child: Align(
+                      Expanded(
+                        child: Container(
+                          // height: MediaQuery.of(context).size.height * 1,
+                          width: MediaQuery.of(context).size.width * 0.43,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10),
+                              //Judul Film
+                              Container(
+                                // height: MediaQuery.of(context).size.height * 0.04,
+                                // width: MediaQuery.of(context).size.width * 0.46,
+                                child: const Align(
                                   alignment: Alignment.centerLeft,
-                                  child: Row(
+                                  child: Wrap(
                                     children: <Widget>[
-                                      for (int i = 0; i < 5; i++)
-                                        const Icon(
-                                          Icons.star,
-                                          color: Color(0xFF6558F5),
-                                          size: 24,
+                                      Text(
+                                        'Avatar : The Way Of Water',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Raleway',
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
                                         ),
+                                      ),
                                     ],
                                   ),
-                                )),
-                          ],
+                                ),
+                              ),
+                              // genre film
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                // height: MediaQuery.of(context).size.height * 0.04,
+                                // width: MediaQuery.of(context).size.width * 0.46,
+                                child: const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    children: <Widget>[
+                                      Text(
+                                        'Fantasy/Action - English',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Raleway',
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 15),
+                                // height: MediaQuery.of(context).size.height * 0.04,
+                                // width: MediaQuery.of(context).size.width * 0.46,
+                                child: const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    children: <Widget>[
+                                      Text(
+                                        '3h 10min',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Raleway',
+                                          fontWeight: FontWeight.w500,
+                                          height: 0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.only(top: 15),
+                                  // height:MediaQuery.of(context).size.height * 0.04,
+                                  // width: MediaQuery.of(context).size.width * 0.46,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Wrap(
+                                      children: <Widget>[
+                                        for (int i = 0; i < 5; i++)
+                                          const Icon(
+                                            Icons.star,
+                                            color: Color(0xFF6558F5),
+                                            size: 24,
+                                          ),
+                                      ],
+                                    ),
+                                  )),
+                            ],
+                          ),
                         ),
                       )
                     ],
@@ -162,47 +181,54 @@ class _checkOutState extends State<checkOut> {
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   height: MediaQuery.of(context).size.height * 0.11,
-                  width: MediaQuery.of(context).size.width * 1,                  
+                  width: MediaQuery.of(context).size.width * 1,
                   child: Column(children: [
                     //sub total checkout
                     Container(
                       margin: EdgeInsets.only(top: 4),
                       height: MediaQuery.of(context).size.height * 0.03,
-                      width: MediaQuery.of(context).size.width * 1,                      
+                      // width: MediaQuery.of(context).size.width * 1,
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           //sub total checkout
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.451,                            
-                            child: const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Subtotal',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Raleway',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                          Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width * 0.43,
+                              child: const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Subtotal',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Raleway',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                           Container(
                             height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.451,                            
+                            width: MediaQuery.of(context).size.width * 0.43,
                             child: const Align(
                               alignment: Alignment.centerRight,
-                              child: Text(
-                                'IDR 75.000',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Raleway',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                                ),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Text(
+                                    'IDR 75.000',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontFamily: 'Raleway',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -213,29 +239,30 @@ class _checkOutState extends State<checkOut> {
                       //tax
                       margin: EdgeInsets.only(top: 4),
                       height: MediaQuery.of(context).size.height * 0.03,
-                      width: MediaQuery.of(context).size.width * 1,                      
+                      width: MediaQuery.of(context).size.width * 1,
                       child: Row(
                         children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.451,                            
-                            child: const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Tax',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Raleway',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                          Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              child: const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Tax',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Raleway',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                           Container(
                             height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.451,                            
+                            width: MediaQuery.of(context).size.width * 0.451,
                             child: const Align(
                               alignment: Alignment.centerRight,
                               child: Text(
@@ -256,29 +283,31 @@ class _checkOutState extends State<checkOut> {
                     Container(
                       margin: EdgeInsets.only(top: 4),
                       height: MediaQuery.of(context).size.height * 0.03,
-                      width: MediaQuery.of(context).size.width * 1,                      
+                      width: MediaQuery.of(context).size.width * 1,
                       child: Row(
                         children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.451,                            
-                            child: const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Total',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Raleway',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                          Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width * 0.451,
+                              child: const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Total',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Raleway',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                           Container(
                             height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.451,                            
+                            width: MediaQuery.of(context).size.width * 0.451,
                             child: const Align(
                               alignment: Alignment.centerRight,
                               child: Text(
@@ -310,33 +339,35 @@ class _checkOutState extends State<checkOut> {
                       ),
                     ),
                   ),
-                ),                
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 4),
                   height: MediaQuery.of(context).size.height * 0.03,
-                  width: MediaQuery.of(context).size.width * 1,                  
+                  width: MediaQuery.of(context).size.width * 1,
                   child: Row(
                     children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                        width: MediaQuery.of(context).size.width * 0.451,                        
-                        child: const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Saldo Wallet',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Raleway',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
+                      Expanded(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          width: MediaQuery.of(context).size.width * 0.451,
+                          child: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Saldo Wallet',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
                             ),
                           ),
                         ),
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.03,
-                        width: MediaQuery.of(context).size.width * 0.451,                        
+                        width: MediaQuery.of(context).size.width * 0.451,
                         child: const Align(
                           alignment: Alignment.centerRight,
                           child: Text(
@@ -351,25 +382,18 @@ class _checkOutState extends State<checkOut> {
                           ),
                         ),
                       ),
-                      
                     ],
                   ),
-                ),                
-                Padding(                
-                padding: const EdgeInsets.only(left: 50,right: 50,top: 30),
-                child: InkWell(
-                  onTap: (){
-                    setState(() {
-                      
-                    });
-                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
                   child: InkWell(
-                    onTap: (){
-                      setState(() {
-                        
-                      });
+                    onTap: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => checkOutFail()),
+                        );
                     },
-                    child: Container(                  
+                    child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,
                       decoration: ShapeDecoration(
                         color: Color(0xFF6558F5),
@@ -393,7 +417,6 @@ class _checkOutState extends State<checkOut> {
                     ),
                   ),
                 ),
-              )
               ],
             ),
           )

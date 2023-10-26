@@ -150,8 +150,7 @@ class MovieTicketSuccessScreen extends StatelessWidget {
                               width: 10,
                               height: 3,
                               color: Colors.white,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                              margin:const EdgeInsets.symmetric(horizontal: 2.0),
                             );
                           }),
                         ),
