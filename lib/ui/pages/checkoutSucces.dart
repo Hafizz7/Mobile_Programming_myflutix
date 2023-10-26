@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/const/app_color.dart';
 import 'package:myflutix/ui/pages/checkout.dart';
 
 class CheckoutSucces extends StatefulWidget {
@@ -60,7 +61,7 @@ class _CheckoutSuccesState extends State<CheckoutSucces> {
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         decoration: ShapeDecoration(
-                          color: Color(0xFF6558F5),
+                          color: primaryColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
@@ -93,7 +94,7 @@ class _CheckoutSuccesState extends State<CheckoutSucces> {
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         decoration: ShapeDecoration(
-                          color: Color(0xFF6558F5),
+                          color: primaryColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),

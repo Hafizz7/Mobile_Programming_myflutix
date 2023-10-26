@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/const/app_color.dart';
 
 class TopupSuccess extends StatelessWidget {
   @override
@@ -40,7 +41,7 @@ class TopupSuccess extends StatelessWidget {
                   ),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all(Color(0xFF6558F5)),
+                        MaterialStateProperty.all(primaryColor),
                   ),
                 ),
               ),

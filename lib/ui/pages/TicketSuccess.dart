@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/const/app_color.dart';
 
 class MovieTicketSuccessScreen extends StatelessWidget {
   @override
@@ -23,7 +24,7 @@ class MovieTicketSuccessScreen extends StatelessWidget {
                     width: 300.0,
                     height: 400.0,
                     decoration: BoxDecoration(
-                      color: Color(0xFF6558F5),
+                      color: primaryColor,
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(
                         color: Colors.black,
@@ -172,7 +173,7 @@ class MovieTicketSuccessScreen extends StatelessWidget {
                         child: Text("Share Ticket"),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
-                              Color(0xFF6558F5)), // Set the background color
+                              primaryColor), // Set the background color
                         ),
                       ),
                     ),
@@ -192,7 +193,7 @@ class MovieTicketSuccessScreen extends StatelessWidget {
                         child: Text("Go to Home"),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
-                              Color(0xFF6558F5)), // Set the background color
+                              primaryColor), // Set the background color
                         ),
                       ),
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/const/app_color.dart';
 
 class OrderSeat extends StatefulWidget {
   const OrderSeat({super.key});
@@ -73,7 +74,7 @@ class _OrderSeatState extends State<OrderSeat> {
                         onPressed: () {},
                         icon: Icon(Icons.arrow_circle_left_outlined),
                         iconSize: 30,
-                        color: Color(0xFF6558F5),
+                        color: primaryColor,
                       ),
                     ),
                     Align(
@@ -189,7 +190,7 @@ class _OrderSeatState extends State<OrderSeat> {
                       width: 20,
                       height: 20,
                       decoration: ShapeDecoration(
-                        color: Color(0xFF6558F5),
+                        color: primaryColor,
                         shape: OvalBorder(),
                       ),
                     ),
@@ -264,7 +265,7 @@ class _OrderSeatState extends State<OrderSeat> {
                     child: Container(                  
                       height: MediaQuery.of(context).size.height * 0.06,
                       decoration: ShapeDecoration(
-                        color: Color(0xFF6558F5),
+                        color: primaryColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                       ),
@@ -299,7 +300,7 @@ Widget buildContentItems(jamNonton item, {bool isItemSelected = false}) {
     child: Padding(
       padding: const EdgeInsets.all(9.0),
       child: Container(
-        color: isItemSelected ? Color(0xFF6558F5) : Color(0xFFD9D9D9),
+        color: isItemSelected ? primaryColor : Color(0xFFD9D9D9),
         child: Align(
           alignment: Alignment.center,
           child: Text(
@@ -328,7 +329,7 @@ Widget buildContentItem(daftarKursi item) {
       height: 30,
       decoration: ShapeDecoration(
         // color: Color(0xFFD9D9D9),
-        color: item.slect ? Color(0xFF6558F5) : Color(0xFFD9D9D9),
+        color: item.slect ? primaryColor : Color(0xFFD9D9D9),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
       child: Align(
