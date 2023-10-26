@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/const/app_color.dart';
 import 'TopupSuccess.dart';
 
 class TopupPage extends StatefulWidget {
@@ -85,7 +86,7 @@ class _TopupPageState extends State<TopupPage> {
                               ),
                             ),
                             backgroundColor: MaterialStateProperty.all<Color>(
-                              isSelected ? Color(0xFF6558F5) : Colors.white,
+                              isSelected ? primaryColor : Colors.white,
                             ),
                             foregroundColor: MaterialStateProperty.all<Color>(
                               isSelected ? Colors.white : Colors.black,
@@ -122,7 +123,7 @@ class _TopupPageState extends State<TopupPage> {
                     ),
                   ),
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xFF6558F5)),
+                      MaterialStateProperty.all<Color>(primaryColor),
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                 ),

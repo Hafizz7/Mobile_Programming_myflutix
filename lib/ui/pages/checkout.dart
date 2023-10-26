@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myflutix/const/app_color.dart';
 import 'package:myflutix/ui/pages/checkoutFail.dart';
 
 class checkOut extends StatefulWidget {
@@ -30,7 +31,7 @@ class _checkOutState extends State<checkOut> {
                           onPressed: () {},
                           icon: Icon(Icons.arrow_circle_left_outlined),
                           iconSize: 30,
-                          color: Color(0xFF6558F5),
+                          color: primaryColor,
                         ),
                       ),
                       Align(
@@ -150,9 +151,9 @@ class _checkOutState extends State<checkOut> {
                                     child: Wrap(
                                       children: <Widget>[
                                         for (int i = 0; i < 5; i++)
-                                          const Icon(
+                                          Icon(
                                             Icons.star,
-                                            color: Color(0xFF6558F5),
+                                            color: primaryColor,
                                             size: 24,
                                           ),
                                       ],
@@ -396,7 +397,7 @@ class _checkOutState extends State<checkOut> {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,
                       decoration: ShapeDecoration(
-                        color: Color(0xFF6558F5),
+                        color: primaryColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                       ),
