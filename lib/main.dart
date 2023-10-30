@@ -101,7 +101,7 @@ class MyApp extends StatelessWidget {
         '/MovieTicketSuccessScreen' :(context) => TopupPage(),
         '/homepage' :(context) => MyHomePage(),
       },
-      initialRoute: '/checkOut',
+      initialRoute: '/homepage',
     );
   }
 }
