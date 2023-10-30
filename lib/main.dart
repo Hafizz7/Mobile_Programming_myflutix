@@ -70,6 +70,7 @@ import 'package:myflutix/ui/pages/WalletTopup.dart';
 import 'package:myflutix/ui/pages/checkout.dart';
 import 'package:myflutix/ui/pages/checkoutFail.dart';
 import 'package:myflutix/ui/pages/checkoutSucces.dart';
+import 'package:myflutix/ui/pages/home_page.dart';
 import 'package:myflutix/ui/pages/orderSeat.dart';
 
 
@@ -97,11 +98,10 @@ class MyApp extends StatelessWidget {
         '/checkOut' :(context) => const checkOut(),           
         '/checkOutFail' :(context) => const checkOutFail(),           
         '/checkOutSucces' :(context) => const CheckoutSucces(),   
-        '/MovieTicketSuccessScreen' :(context) => TopupPage(),   
-        '/MyTicketPage' :(context) => MyTicketPage(),   
-        
+        '/MovieTicketSuccessScreen' :(context) => TopupPage(),
+        '/homepage' :(context) => MyHomePage(),
       },
-      initialRoute: '/MovieTicketSuccessScreen',
+      initialRoute: '/checkOut',
     );
   }
 }
