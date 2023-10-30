@@ -77,8 +77,8 @@ class _MyTicketPageState extends State<MyTicketPage> {
                 setState(() {
                   filteredTickets = myTickets
                       .where((ticket) => ticket.title
-                          .toLowerCase()
-                          .contains(value.toLowerCase()))
+                      .toLowerCase()
+                      .contains(value.toLowerCase()))
                       .toList();
                 });
               },

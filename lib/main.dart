@@ -64,6 +64,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:myflutix/ui/pages/MyTicketPage.dart';
 import 'package:myflutix/ui/pages/TicketSuccess.dart';
 import 'package:myflutix/ui/pages/WalletTopup.dart';
 import 'package:myflutix/ui/pages/checkout.dart';
@@ -97,8 +98,10 @@ class MyApp extends StatelessWidget {
         '/checkOutFail' :(context) => const checkOutFail(),           
         '/checkOutSucces' :(context) => const CheckoutSucces(),   
         '/MovieTicketSuccessScreen' :(context) => TopupPage(),   
+        '/MyTicketPage' :(context) => MyTicketPage(),   
+        
       },
-      initialRoute: '/checkOut',
+      initialRoute: '/MovieTicketSuccessScreen',
     );
   }
 }

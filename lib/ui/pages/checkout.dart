@@ -13,6 +13,9 @@ class _checkOutState extends State<checkOut> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("chekout"),
+      ),
       body: ListView(
         children: [
           Padding(
@@ -34,9 +37,9 @@ class _checkOutState extends State<checkOut> {
                           color: primaryColor,
                         ),
                       ),
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
-                        child: const Text(
+                        child: Text(
                           'Checkout',
                           style: TextStyle(
                             color: Colors.black,
@@ -158,7 +161,8 @@ class _checkOutState extends State<checkOut> {
                                           ),
                                       ],
                                     ),
-                                  )),
+                                )
+                              ),
                             ],
                           ),
                         ),
