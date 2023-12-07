@@ -68,9 +68,9 @@ class _TopupPageState extends State<TopupPage> {
                     },
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'IDR', 
+                      hintText: 'IDR', // Placeholder text
                       contentPadding:
-                          EdgeInsets.all(8.0), 
+                          EdgeInsets.all(8.0), // Padding for the placeholder
                     ),
                   ),
                 ),
@@ -79,7 +79,7 @@ class _TopupPageState extends State<TopupPage> {
                 GridView.builder(
                   shrinkWrap: true,
                   physics:
-                      NeverScrollableScrollPhysics(), 
+                      NeverScrollableScrollPhysics(), // This line disables scrolling
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.0,
@@ -96,10 +96,11 @@ class _TopupPageState extends State<TopupPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              if (isSelected) {                              
+                              if (isSelected) {
+                                // Deselect the button if it's already selected
                                 _selectedAmount = 0;
                               } else {
-                          
+                                // Select the button if it's not selected
                                 _selectedAmount = nominalOptions[index];
                               }
                             });
@@ -202,4 +203,4 @@ class _TopupPageState extends State<TopupPage> {
 
 List<int> nominalOptions = [50000, 75000, 100000, 250000, 1000000, 1500000];
 
-Color primaryColor = Colors.blue; 
+Color primaryColor = Colors.blue; // Change this to your primary color
