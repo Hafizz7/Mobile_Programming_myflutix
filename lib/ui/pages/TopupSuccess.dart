@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myflutix/const/app_color.dart';
+import 'package:myflutix/ui/pages/home_page.dart';
 
 class TopupSuccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      ),
+      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -31,7 +31,10 @@ class TopupSuccess extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle the button action
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomePage()),
+                    );
                   },
                   child: Text(
                     "Go To Home",
@@ -40,8 +43,7 @@ class TopupSuccess extends StatelessWidget {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(primaryColor),
+                    backgroundColor: MaterialStateProperty.all(primaryColor),
                   ),
                 ),
               ),
