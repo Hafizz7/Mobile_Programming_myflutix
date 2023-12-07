@@ -1,6 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:myflutix/const/app_color.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'TopupSuccess.dart';
+
+class ProfileUser {
+  final String email;
+  final String id_akun;
+  final int saldo;
+  final String username;
+  final String fotoProfile;
+
+  ProfileUser({
+    required this.email,
+    required this.id_akun,
+    required this.saldo,
+    required this.username,
+    required this.fotoProfile,
+  });
+
+  factory ProfileUser.fromMap(Map<String, dynamic> map) {
+    return ProfileUser(
+      email: map['email'] ?? '',
+      id_akun: map['id_akun'] ?? '',
+      saldo: (map['saldo'] ?? 0).toInt(),
+      username: map['username'] ?? '',
+      fotoProfile: map['fotoProfile'] ?? '',
+    );
+  }
+}
 
 class TopupPage extends StatefulWidget {
   @override
@@ -8,8 +35,8 @@ class TopupPage extends StatefulWidget {
 }
 
 class _TopupPageState extends State<TopupPage> {
-  double _customAmount = 0.0;
-  double _selectedAmount = 0.0;
+  int _customAmount = 0;
+  int _selectedAmount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +63,14 @@ class _TopupPageState extends State<TopupPage> {
                     keyboardType: TextInputType.number,
                     onChanged: (value) {
                       setState(() {
-                        _customAmount = double.tryParse(value) ?? 0.0;
+                        _customAmount = int.tryParse(value) ?? 0;
                       });
                     },
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'IDR', // Placeholder text
+                      hintText: 'IDR', 
                       contentPadding:
-                          EdgeInsets.all(8.0), // Padding for the placeholder
+                          EdgeInsets.all(8.0), 
                     ),
                   ),
                 ),
@@ -52,7 +79,7 @@ class _TopupPageState extends State<TopupPage> {
                 GridView.builder(
                   shrinkWrap: true,
                   physics:
-                      NeverScrollableScrollPhysics(), // This line disables scrolling
+                      NeverScrollableScrollPhysics(), 
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.0,
@@ -69,11 +96,10 @@ class _TopupPageState extends State<TopupPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              if (isSelected) {
-                                // Deselect the button if it's already selected
-                                _selectedAmount = 0.0;
+                              if (isSelected) {                              
+                                _selectedAmount = 0;
                               } else {
-                                // Select the button if it's not selected
+                          
                                 _selectedAmount = nominalOptions[index];
                               }
                             });
@@ -93,7 +119,7 @@ class _TopupPageState extends State<TopupPage> {
                             ),
                           ),
                           child: Text(
-                            "Rp ${nominalOptions[index].toStringAsFixed(0)}",
+                            "Rp ${nominalOptions[index].toString()}",
                           ),
                         ),
                       ),
@@ -104,17 +130,15 @@ class _TopupPageState extends State<TopupPage> {
               ],
             ),
           ),
-          Text(
-              "Jumlah yang akan ditop-up: Rp ${_customAmount + _selectedAmount}"),
+          Text("Jumlah yang akan ditop-up: Rp ${_customAmount + _selectedAmount}"),
           FractionallySizedBox(
             widthFactor: 0.8,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => TopupSuccess()),
-                  );
+                  int totalAmount = _customAmount + _selectedAmount;
+                  topUpAndSaveToFirebase(totalAmount);
                 },
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -135,6 +159,47 @@ class _TopupPageState extends State<TopupPage> {
       ),
     );
   }
+
+  Future<void> topUpAndSaveToFirebase(int totalAmount) async {
+    try {
+      // Mendapatkan ID pengguna yang aktif
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      // Membaca data profileUser dari Firestore
+      DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
+          .collection('id_akun')
+          .doc(userId)
+          .get();
+
+      if (profileSnapshot.exists) {
+        // Jika dokumen profileUser ditemukan, update saldo
+        ProfileUser profileUser = ProfileUser.fromMap(profileSnapshot.data() as Map<String, dynamic>);
+
+        // Menambahkan totalAmount ke saldo
+        int newSaldo = profileUser.saldo + totalAmount;
+
+        // Update saldo di Firestore
+        await FirebaseFirestore.instance
+            .collection('id_akun')
+            .doc(userId)
+            .update({'saldo': newSaldo});
+
+        // Menampilkan pesan sukses atau melakukan navigasi ke halaman selanjutnya
+        print('Top-up berhasil. Saldo baru: $newSaldo');
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => TopupSuccess()),
+        );
+      } else {
+        // Handle jika dokumen profileUser tidak ditemukan
+        print('Dokumen profileUser tidak ditemukan');
+      }
+    } catch (e) {
+      // Handle error
+      print('Error during top-up: $e');
+    }
+  }
 }
 
-List<double> nominalOptions = [50000, 75000, 100000, 250000, 1000000, 1500000];
+List<int> nominalOptions = [50000, 75000, 100000, 250000, 1000000, 1500000];
+
+Color primaryColor = Colors.blue; 
