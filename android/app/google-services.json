@@ -1,14 +1,13 @@
 {
   "project_info": {
-    "project_number": "969375123623",
-    "project_id": "myflutix-69fed",
-    "storage_bucket": "myflutix-69fed.appspot.com"
-    
+    "project_number": "644867627278",
+    "project_id": "myflutix-94894",
+    "storage_bucket": "myflutix-94894.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:969375123623:android:fca5c78d6660351ed0b382",
+        "mobilesdk_app_id": "1:644867627278:android:d7eadcb2eff79b19df1f5f",
         "android_client_info": {
           "package_name": "com.example.myflutix"
         }
@@ -16,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA6r831EYusnpqtJtM9iPDaBYSHcP-UvBs"
+          "current_key": "AIzaSyC4oEWEZcEcnkXcrwBpo6gdrMKKXY-9HZU"
         }
       ],
       "services": {
