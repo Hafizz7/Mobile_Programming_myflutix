@@ -1,11 +1,109 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:myflutix/ui/pages/WalletTopup.dart';
 
-class MyWalletPage extends StatelessWidget {
+class MyWalletPage extends StatefulWidget {
+  @override
+  _MyWalletPageState createState() => _MyWalletPageState();
+}
+
+class _MyWalletPageState extends State<MyWalletPage> {
+  ProfileUser? profileKu;
+  User? currentUser;
+  List<Ticket> myTickets = [];
+  List<Ticket> filteredTickets = [];
+  late int saldo;
+  late String formattedSaldo;
+  bool isLoading = true;
+  void initState() {
+    getUserID();
+
+    // Ganti inisialisasi myTickets dengan pemanggilan fungsi getTransactionHistory
+    getTransactionHistory(currentUser?.uid ?? '').then((tickets) {
+      setState(() {
+        myTickets = tickets;
+        filteredTickets = myTickets;
+      });
+    });
+    fetchData();
+    super.initState();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      ProfileUser profile = await getProfile(currentUser!.uid);
+      List<Ticket> tickets =
+          await getTransactionHistory(currentUser?.uid ?? '');
+      setState(() {
+        myTickets = tickets;
+        filteredTickets = myTickets;
+        profileKu = profile;
+        saldo = profileKu!.saldo;
+        formattedSaldo =
+            NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                .format(saldo);
+        isLoading = false;
+      });
+    } catch (error) {
+      print('Error fetching data: $error');
+      isLoading = false;
+    }
+  }
+
+  // Function untuk mendapatkan ID pengguna
+  void getUserID() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUser = user;
+      });
+    }
+  }
+
+  // Function untuk mendapatkan riwayat transaksi berdasarkan ID pengguna
+  Future<List<Ticket>> getTransactionHistory(String idAkun) async {
+    List<Ticket> transactionHistory = [];
+
+    try {
+      // Ambil referensi ke koleksi id_transaksi_ticket dalam dokumen dengan id_akun tertentu
+      CollectionReference transactionCollection = FirebaseFirestore.instance
+          .collection('akun')
+          .doc(idAkun)
+          .collection('id_transaksi_ticket');
+
+      // Ambil data dari Firestore
+      QuerySnapshot querySnapshot = await transactionCollection.get();
+
+      // Iterasi melalui dokumen-dokumen dalam koleksi
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        print('Raw data dari Firestore: ${doc.data()}');
+        try {
+          // Ganti pemanggilan fromMap dengan kolom yang sesuai
+          Ticket ticket = Ticket.fromMap(doc.data() as Map<String, dynamic>);
+          print('Ticket dibuat: $ticket');
+          transactionHistory.add(ticket);
+        } catch (e) {
+          print('Error membuat Ticket: $e');
+        }
+      }
+
+      print('Riwayat transaksi: $transactionHistory');
+      print('ID Akun: $idAkun');
+    } catch (error) {
+      print('Error mengambil riwayat transaksi: $error');
+      throw error;
+    }
+
+    return transactionHistory;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Wallet'),
+        title: Text('Dompet Saya'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -18,74 +116,128 @@ class MyWalletPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.0),
                 color: Color(0xFF6558F5),
               ),
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    'Your Balance',
-                    style: TextStyle(color: Colors.white, fontSize: 20.0),
-                  ),
-                  Text(
-                    'Rp 10,000,000',
-                    style: TextStyle(color: Colors.white, fontSize: 30.0),
-                  ),
-                  Divider(
-                    color: Colors.white,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
+              child: isLoading
+                  ? CircularProgressIndicator()
+                  : Column(
+                      children: <Widget>[
+                        Text(
+                          'Saldo Anda',
+                          style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
+                        Text(
+                          (formattedSaldo = NumberFormat.currency(
+                                  locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                              .format(saldo ?? 0)),
+                          style: TextStyle(color: Colors.white, fontSize: 30.0),
+                        ),
+                        Divider(
+                          color: Colors.white,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Text(
-                              'Topup',
-                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Topup',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                  Text(
+                                    'IDR 50.000',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              'IDR 50,000',
-                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                            Container(
+                              width: 1.0,
+                              height: 50.0,
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Pengeluaran',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                  Text(
+                                    'IDR 250.000',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                      Container(
-                        width: 1.0,
-                        height: 50.0,
-                        color: Colors.white,
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'Expense',
-                              style: TextStyle(color: Colors.white, fontSize: 20.0),
-                            ),
-                            Text(
-                              'IDR 250,000',
-                              style: TextStyle(color: Colors.white, fontSize: 20.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
+            ),
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  // Pindah ke halaman baru di sini
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TopupPage()),
+                  );
+                },
+                child: Container(
+                  color: Color(0xFF6558F5),
+                  width: double.infinity,
+                  padding: EdgeInsets.all(8.0),
+                  margin: EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "TOP UP",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
             Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'Recent Transactions',
+                'Transaksi Terbaru',
                 style: TextStyle(fontSize: 18.0),
               ),
             ),
-            for (var transaction in recentTransactions)
-              TransactionCard(
-                title: transaction.title,
-                date: transaction.date,
-                time: transaction.time,
-                seatNumber: transaction.seatNumber,
-              ),
+            FutureBuilder<List<Ticket>>(
+              future: getTransactionHistory(currentUser?.uid ?? ''),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator(); // Menampilkan indikator loading
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('Tidak ada riwayat transaksi.');
+                } else {
+                  // Menampilkan riwayat transaksi
+                  List<Ticket> transactionHistory = snapshot.data!;
+                  return Container(
+                    height: MediaQuery.of(context).size.height *
+                        0.6, // Set an arbitrary height
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: transactionHistory.length,
+                      itemBuilder: (context, index) {
+                        return TransactionCard(
+                          ticket: transactionHistory[index],
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -93,31 +245,43 @@ class MyWalletPage extends StatelessWidget {
   }
 }
 
-class Transaction {
+class Ticket {
+  final String image;
   final String title;
   final String date;
+  final String Bioskop;
   final String time;
-  final String seatNumber;
+  final String id_transaksi;
+  final List<dynamic> seatNumber;
 
-  Transaction({
+  Ticket({
+    required this.image,
+    required this.Bioskop,
+    required this.id_transaksi,
     required this.title,
     required this.date,
     required this.time,
     required this.seatNumber,
   });
+
+  factory Ticket.fromMap(Map<String, dynamic> map) {
+    return Ticket(
+      Bioskop: map['bioskop'] ?? '',
+      image: map['gambar'] ?? '',
+      title: map['nama_film'] ?? '',
+      id_transaksi: map['id_transaksi_ticket'],
+      date: map['waktu'] ?? '', // Sesuaikan dengan kolom yang ada di Firestore
+      time: map['jam'] ?? '', // Sesuaikan dengan kolom yang ada di Firestore
+      seatNumber: map['kursi'] ?? '',
+    );
+  }
 }
 
 class TransactionCard extends StatelessWidget {
-  final String title;
-  final String date;
-  final String time;
-  final String seatNumber;
+  final Ticket ticket; // Tambahkan deklarasi parameter ticket
 
   TransactionCard({
-    required this.title,
-    required this.date,
-    required this.time,
-    required this.seatNumber,
+    required this.ticket,
   });
 
   @override
@@ -132,8 +296,8 @@ class TransactionCard extends StatelessWidget {
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: Image.asset(
-              'assets/$title.jpg', // Assuming you have an image with the title as the file name
+            child: Image.network(
+              ticket.image, // Gunakan URL gambar dari objek Ticket
               height: imageHeight,
               fit: BoxFit.contain,
             ),
@@ -142,11 +306,11 @@ class TransactionCard extends StatelessWidget {
             flex: 2,
             child: ListTile(
               title: Text(
-                title,
+                ticket.title,
                 style: TextStyle(color: Colors.white),
               ),
               subtitle: Text(
-                '$date\n$time\n$seatNumber',
+                '${ticket.date}\n${ticket.time}\n${ticket.seatNumber}',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -157,29 +321,31 @@ class TransactionCard extends StatelessWidget {
   }
 }
 
-final recentTransactions = [
-  Transaction(
-    title: 'Avatar',
-    date: '15 Oktober 2023',
-    time: '19:00',
-    seatNumber: 'A12, A13, A14',
-  ),
-  Transaction(
-    title: 'Avenger',
-    date: '20 November 2023',
-    time: '15:30',
-    seatNumber: 'B5',
-  ),
-  Transaction(
-    title: 'Archer',
-    date: '20 November 2023',
-    time: '15:30',
-    seatNumber: 'A5',
-  ),
-  Transaction(
-    title: 'Archer',
-    date: '20 November 2023',
-    time: '15:30',
-    seatNumber: 'A5',
-  ),
-];
+Future<ProfileUser> getProfile(String id_akun) async {
+  try {
+    DocumentSnapshot profileUserr = await FirebaseFirestore.instance
+        .collection('id_akun')
+        .doc(id_akun)
+        .get();
+
+    if (profileUserr.exists) {
+      // Pastikan dokumen ada sebelum mencoba mengambil datanya
+      Map<String, dynamic>? profileUser =
+          profileUserr.data() as Map<String, dynamic>?;
+
+      if (profileUser != null) {
+        return ProfileUser.fromMap(profileUser);
+      } else {
+        // Handle case where profileUser is null
+        throw Exception('Data Profile null');
+      }
+    } else {
+      // Handle case where the document doesn't exist
+      throw Exception('Dokumen tiket tidak ditemukan');
+    }
+  } catch (error) {
+    print('Error fetching tiket: $error');
+    // Handle error as needed
+    throw error;
+  }
+}
