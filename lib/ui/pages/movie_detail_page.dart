@@ -1,21 +1,149 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myflutix/api/api_service.dart';
 import 'package:myflutix/const/app_color.dart';
+import 'package:myflutix/models/cast.dart';
+import 'package:myflutix/models/movie_populer_list.dart';
+import 'package:myflutix/models/runtime.dart';
+import 'package:myflutix/models/tiket.dart';
+import 'package:myflutix/ui/pages/orderSeat.dart';
 
 class MyMovieDetailPage extends StatefulWidget {
-  const MyMovieDetailPage({super.key});
+  final int movieId;
+  List<String> tanggalList = [];
+  MyMovieDetailPage({required this.movieId, required this.tanggalList});
 
   @override
   State<MyMovieDetailPage> createState() => _MyMovieDetailPageState();
 }
 
 class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
+  Movie? movies;
+  bool isSelected = false;
+  List<Casttt> castlistt = [];
+  RunTime? runtimee;
+  final ApiService apiService = ApiService();
   bool isReadmore = false;
+  List<String> dateList = [];
+  String selectedDate = "";
+  bool isLoading = true;
+  //untuk hari tiket
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final List<Movie> result = await apiService.getPopularMovies();
+      List<Casttt> castList = await apiService.getDetailMovie(widget.movieId);
+      RunTime runtimes = await apiService.getRuntimeMovies(widget.movieId);
+
+      final selectedMovie =
+          result.firstWhere((movie) => movie.id == widget.movieId);
+      final QuerySnapshot tiketSnapshot = await FirebaseFirestore.instance
+          .collection('id_film')
+          .doc(widget.movieId.toString())
+          .collection('tiket')
+          .get();
+
+// Cek apakah ada dokumen yang ditemukan
+      if (tiketSnapshot.docs.isNotEmpty) {
+        // Melakukan looping melalui semua dokumen
+        for (final doc in tiketSnapshot.docs) {
+          // Mengakses data dari setiap dokumen
+          final String id = doc.id;
+          final Map<String, dynamic>? tiketData =
+              doc.data() as Map<String, dynamic>?;
+
+          // Cetak data dokumen
+          print('ID Dokumen: $id');
+          print('Data Tiket: $tiketData');
+
+          // Cek apakah ada subkoleksi "jam" di setiap dokumen
+          final QuerySnapshot jamSnapshot = await FirebaseFirestore.instance
+              .collection('id_film')
+              .doc(widget.movieId.toString())
+              .collection('tiket')
+              .doc(id)
+              .collection('jam')
+              .get();
+
+          // Melakukan looping melalui semua dokumen subkoleksi "jam"
+          for (final jamDoc in jamSnapshot.docs) {
+            // Mengakses data dari setiap dokumen subkoleksi "jam"
+            final String jamId = jamDoc.id;
+            final Map<String, dynamic>? jamData =
+                jamDoc.data() as Map<String, dynamic>?;
+
+            // Cetak data dokumen subkoleksi "jam"
+            print('ID Jam Dokumen: $jamId');
+            print('Data Jam: $jamData');
+          }
+        }
+      } else {
+        // Tidak ada dokumen yang ditemukan
+        print('Tidak ada dokumen tiket untuk film dengan ID ${widget.movieId}');
+      }
+
+      print('ID Film: ${widget.movieId.toString()}');
+      print(
+          'Tiket Collection Path: ${FirebaseFirestore.instance.collection('id_film').doc(widget.movieId.toString()).collection('tiket').path}');
+
+      setState(() {
+        runtimee = runtimes;
+        castlistt = castList;
+        movies = selectedMovie;
+        dateList = widget.tanggalList;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  String formatDuration(int totalMinutes) {
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
+
+    return '$hours h $minutes m';
+  }
+
+  String ratingg(double rating) {
+    int roundedRating = (rating / 2).round();
+
+    return '$roundedRating/5'; // Format it as X/5
+  }
+
+  String mapLanguageCodeToName(String languageCode) {
+    Map<String, String> languageMap = {
+      'en': 'English',
+      // Tambahkan entri untuk kode bahasa lainnya sesuai kebutuhan
+    };
+
+    return languageMap[languageCode] ?? 'Unknown';
+  }
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(        
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : detailPage(),
+      ),
+    );
+  }
+
+  Widget detailPage() {
     return Scaffold(
       body: ListView(
         children: <Widget>[
+          Container(
+            child: Text("Movie ID: ${widget.movieId}"),
+          ),
           Container(
             width: MediaQuery.of(context).size.width,
             height: 235,
@@ -34,39 +162,36 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
                 ).createShader(bounds);
               },
               blendMode: BlendMode.dstIn,
-              child: Image.asset('avatar_details.png'),
+              child: Image.network(
+                'https://image.tmdb.org/t/p/w500${movies?.poster_path ?? ''}',
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Icon(Icons.watch_later_outlined),
-                Text("3h 10min"),
-                SizedBox(
-                  width: 15,
-                ),
+                Text("${formatDuration(runtimee?.runtime ?? 0)}"),
+                SizedBox(width: 15),
                 Icon(Icons.star_border),
-                Text("4.0/5"),
-                SizedBox(
-                  width: 15,
-                ),
-                Text("Fantasy/Action"),
-                SizedBox(
-                  width: 15,
-                ),
-                Text("English"),
+                Text("${ratingg(runtimee?.rating ?? 0)}"),
+                SizedBox(width: 15),
+                Text(runtimee?.genre?.take(2).join(', ') ?? 'No Genre'),
+                SizedBox(width: 15),
+                // Text("English"),
+
+                Text("${mapLanguageCodeToName(runtimee?.bahasa ?? '')}"),
               ],
             ),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Text(
-              'Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na\'vi race to protect their home.',
+              '${movies?.overview}',
               textAlign: TextAlign.justify,
               style: const TextStyle(
                 color: Colors.black,
@@ -80,9 +205,7 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
                   (isReadmore ? TextOverflow.visible : TextOverflow.ellipsis),
             ),
           ),
-          const SizedBox(
-            height: 1.5,
-          ),
+          const SizedBox(height: 1.5),
           InkWell(
             onTap: () {
               setState(() {
@@ -114,23 +237,24 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
             ),
           ),
           Container(
-            height: 80, // Adjust the height as needed
+            height: 80,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 10, // Adjust the number of cast members
+              itemCount: castlistt.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Container(
-                    width: 50,
-                    height: 70,
-                    decoration: const ShapeDecoration(
+                    width: 55,
+                    height: 80,
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                        image:
-                            AssetImage("gambar.png"), // Use a valid image URL
+                        image: NetworkImage(
+                          'https://image.tmdb.org/t/p/w500${castlistt[index].profile_path ?? ''}',
+                        ),
                         fit: BoxFit.contain,
                       ),
-                      shape: StadiumBorder(),
+                      shape: BoxShape.circle,
                     ),
                   ),
                 );
@@ -172,20 +296,15 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                      height: 5), // Adjust the spacing between text and dates
+                  const SizedBox(height: 5),
                   Row(
-                    children: [
-                      DateBox('25 June'),
-                      DateBox('26 June'),
-                      DateBox('27 June'),
-                    ],
+                    children: dateList.map((date) => DateBox(date)).toList(),
                   ),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 15,),
+          SizedBox(height: 15),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Container(
@@ -193,19 +312,32 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
               decoration: ShapeDecoration(
                 color: primaryColor,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
+                  borderRadius: BorderRadius.circular(5),
+                ),
               ),
               child: Align(
                 alignment: Alignment.center,
-                child: Text(
-                  'Get Reservation',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'Raleway',
-                    fontWeight: FontWeight.w500,
-                    height: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderSeat(
+                            movieId: widget.movieId,
+                            selectedDate: selectedDate.toString()),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Get Reservation',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontFamily: 'Raleway',
+                      fontWeight: FontWeight.w500,
+                      height: 0,
+                    ),
                   ),
                 ),
               ),
@@ -217,47 +349,61 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
   }
 
   Widget DateBox(String date) {
+    bool isSelected = selectedDate == date;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Container(
-        width: 60,
-        height: 25,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 60,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Center(
-                child: Text(
-                  date,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontFamily: 'Raleway',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
+      child: GestureDetector(
+        onTap: () {
+          // Tambahkan logika atau tindakan yang diinginkan ketika kotak tanggal diketuk di sini
+          print('Selected date: $date');
+          setState(() {
+            selectedDate = date;
+          });
+          navigateToOrderSeat(
+              date); // Panggil fungsi untuk navigasi ke OrderSeat
+        },
+        child: Container(
+          width: 60,
+          height: 25,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 60,
+                height: 25,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? const Color.fromARGB(255, 205, 243, 33)
+                      : Colors.white, // Ganti warna saat dipilih
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Center(
+                  child: Text(
+                    date,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: 'Raleway',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget buildText(String text) {
-    final lines = isReadmore ? null : 3;
-    return Text(
-      text,
-      style: const TextStyle(fontSize: 25),
-      maxLines: lines,
-      overflow: isReadmore ? TextOverflow.visible : TextOverflow.ellipsis,
-    );
+  void navigateToOrderSeat(String selectedDate) {
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) =>
+    //         OrderSeat(movieId: widget.movieId, selectedDate: selectedDate),
+    //   ),
+    // );
   }
 }
