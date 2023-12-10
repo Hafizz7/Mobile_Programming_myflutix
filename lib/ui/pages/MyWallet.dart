@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myflutix/models/profileUser.dart';
+import 'package:myflutix/models/saldo.dart';
+import 'package:myflutix/services/SaldoUser.dart';
 import 'package:myflutix/ui/pages/WalletTopup.dart';
 
 class MyWalletPage extends StatefulWidget {
@@ -11,12 +14,19 @@ class MyWalletPage extends StatefulWidget {
 
 class _MyWalletPageState extends State<MyWalletPage> {
   ProfileUser? profileKu;
+  SaldoUserModels? topUp;
+  SaldoUserModels? Pengeluaran;
   User? currentUser;
   List<Ticket> myTickets = [];
   List<Ticket> filteredTickets = [];
   late int saldo;
   late String formattedSaldo;
+  late String pengeluaranRP;
+  late String topUPRP;
   bool isLoading = true;
+  int pengeluarannya = 0;
+  int topUPKU = 0;
+  saldoService hisrotySaldo = saldoService();
   void initState() {
     getUserID();
 
@@ -34,16 +44,21 @@ class _MyWalletPageState extends State<MyWalletPage> {
   Future<void> fetchData() async {
     try {
       ProfileUser profile = await getProfile(currentUser!.uid);
-      List<Ticket> tickets =
-          await getTransactionHistory(currentUser?.uid ?? '');
+      SaldoUserModels saldoHistoy = await hisrotySaldo.getSaldo(currentUser!.uid);
+      List<Ticket> tickets = await getTransactionHistory(currentUser?.uid ?? '');
       setState(() {
+        
+        // topUp = saldoHistoy;
+        // Pengeluaran = saldoHistoy;
+        // pengeluarannya = Pengeluaran!.pengeluaran!;
+        // topUPKU = Pengeluaran!.topup!;
         myTickets = tickets;
         filteredTickets = myTickets;
         profileKu = profile;
         saldo = profileKu!.saldo;
-        formattedSaldo =
-            NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
-                .format(saldo);
+        topUPRP = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(saldoHistoy.topup!);
+        pengeluaranRP = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(saldoHistoy.pengeluaran!);
+        formattedSaldo = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(saldo);
         isLoading = false;
       });
     } catch (error) {
@@ -110,17 +125,17 @@ class _MyWalletPageState extends State<MyWalletPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(8.0),
-              margin: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
                 color: Color(0xFF6558F5),
               ),
               child: isLoading
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : Column(
                       children: <Widget>[
-                        Text(
+                        const Text(
                           'Saldo Anda',
                           style: TextStyle(color: Colors.white, fontSize: 20.0),
                         ),
@@ -130,7 +145,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                               .format(saldo ?? 0)),
                           style: TextStyle(color: Colors.white, fontSize: 30.0),
                         ),
-                        Divider(
+                        const Divider(
                           color: Colors.white,
                         ),
                         Row(
@@ -139,14 +154,14 @@ class _MyWalletPageState extends State<MyWalletPage> {
                             Expanded(
                               child: Column(
                                 children: <Widget>[
-                                  Text(
+                                  const Text(
                                     'Topup',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20.0),
                                   ),
                                   Text(
-                                    'IDR 50.000',
-                                    style: TextStyle(
+                                    topUPRP,
+                                    style: const TextStyle(
                                         color: Colors.white, fontSize: 20.0),
                                   ),
                                 ],
@@ -160,13 +175,13 @@ class _MyWalletPageState extends State<MyWalletPage> {
                             Expanded(
                               child: Column(
                                 children: <Widget>[
-                                  Text(
+                                const Text(
                                     'Pengeluaran',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20.0),
                                   ),
                                   Text(
-                                    'IDR 250.000',
+                                    pengeluaranRP,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20.0),
                                   ),
