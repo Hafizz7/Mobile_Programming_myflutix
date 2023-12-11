@@ -416,7 +416,7 @@ class _checkOutFailState extends State<checkOutFail> {
                     onTap: () {
                       Navigator.push(
                         context, 
-                         MaterialPageRoute(builder: (context) => CheckoutSucces()),
+                         MaterialPageRoute(builder: (context) => CheckoutSucces(id_transaksi: "",tanggalSelect: "",jamSelect: "",judulMovie: "",)),
                         );
                     },
                     child: Container(

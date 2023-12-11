@@ -10,6 +10,7 @@ import 'package:myflutix/const/app_color.dart';
 import 'package:myflutix/models/movie_populer_list.dart';
 import 'package:myflutix/models/profileUser.dart';
 import 'package:myflutix/models/tiket.dart';
+import 'package:myflutix/services/getDataUser.dart';
 import 'package:myflutix/ui/pages/movie_detail_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:myflutix/ui/widgets/home_category_button.dart';
@@ -28,6 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<dynamic> id_movies = [];
   List<String> tanggalList = [];
   String? profileImageUrl;
+  DataUser datauserku = DataUser();
 
   // final imagesUrl = [
   //   'barbie_poster.jpeg',
@@ -73,8 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> fetchData() async {
     try {
       final List<Movie> result = await apiService.getPopularMovies();
-      ProfileUser profile = await getProfile(userAktif!.uid);
-
+      ProfileUser profile = await datauserku.getProfile(userAktif!.uid);
       setState(() {
         movies = result;
         profileKu = profile;
@@ -454,34 +455,34 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 }
 
-Future<ProfileUser> getProfile(String id_akun) async {
-  try {
-    DocumentSnapshot profileUserr = await FirebaseFirestore.instance
-        .collection('id_akun')
-        .doc(id_akun)
-        .get();
+// Future<ProfileUser> getProfile(String id_akun) async {
+//   try {
+//     DocumentSnapshot profileUserr = await FirebaseFirestore.instance
+//         .collection('id_akun')
+//         .doc(id_akun)
+//         .get();
 
-    if (profileUserr.exists) {
-      // Pastikan dokumen ada sebelum mencoba mengambil datanya
-      Map<String, dynamic>? profileUser =
-          profileUserr.data() as Map<String, dynamic>?;
+//     if (profileUserr.exists) {
+//       // Pastikan dokumen ada sebelum mencoba mengambil datanya
+//       Map<String, dynamic>? profileUser =
+//           profileUserr.data() as Map<String, dynamic>?;
 
-      if (profileUser != null) {
-        return ProfileUser.fromMap(profileUser);
-      } else {
-        // Handle case where profileUser is null
-        throw Exception('Data Profile null');
-      }
-    } else {
-      // Handle case where the document doesn't exist
-      throw Exception('Dokumen tiket tidak ditemukan');
-    }
-  } catch (error) {
-    print('Error fetching tiket: $error');
-    // Handle error as needed
-    throw error;
-  }
-}
+//       if (profileUser != null) {
+//         return ProfileUser.fromMap(profileUser);
+//       } else {
+//         // Handle case where profileUser is null
+//         throw Exception('Data Profile null');
+//       }
+//     } else {
+//       // Handle case where the document doesn't exist
+//       throw Exception('Dokumen tiket tidak ditemukan');
+//     }
+//   } catch (error) {
+//     print('Error fetching tiket: $error');
+//     // Handle error as needed
+//     throw error;
+//   }
+// }
 
 List<String> imageUrls = [
   'https://iili.io/JINDsiF.png',

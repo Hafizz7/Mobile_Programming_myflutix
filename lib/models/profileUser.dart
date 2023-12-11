@@ -3,12 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ProfileUser {
   String id_akun;
   int saldo;
+  String alamat;
   String username;  
   String fotoProfile;  
   String email;
 
   ProfileUser({
     required this.email,
+    required this.alamat,
     required this.id_akun,
     required this.saldo,
     required this.username,
@@ -21,6 +23,7 @@ class ProfileUser {
       'id_akun': id_akun,
       'saldo': saldo,
       'username': username,
+      'alamat': alamat,
       'fotoProfile': fotoProfile,      
     };
   }
@@ -30,6 +33,7 @@ class ProfileUser {
       id_akun: map['id_akun'],
       saldo: map['saldo'],
       username: map['username'],
+      alamat: map['alamat'],
       fotoProfile: map['fotoProfile'],      
       email: map['email'],
     );

@@ -1,20 +1,120 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myflutix/api/api_service.dart';
 import 'package:myflutix/const/app_color.dart';
-import 'package:myflutix/ui/pages/checkoutFail.dart';
+import 'package:myflutix/models/runtime.dart';
+import 'package:myflutix/models/seats.dart';
+import 'package:myflutix/ui/pages/checkoutSucces.dart';
+import 'package:myflutix/ui/pages/orderSeat.dart';
+import 'package:uuid/uuid.dart';
 
 class checkOut extends StatefulWidget {
-  const checkOut({super.key});
+  final int movieId;
+  final int totalHarga;
+  final String tanggalSelect;
+  final String jamSelect;
+  final Function saveOrderSeat;
+
+  final List<daftarKursi> selectedSeats;
+
+  checkOut(
+      {required this.movieId,
+      required this.selectedSeats,
+      required this.tanggalSelect,
+      required this.jamSelect,
+      required this.totalHarga,
+      required this.saveOrderSeat});
 
   @override
   State<checkOut> createState() => _checkOutState();
 }
 
 class _checkOutState extends State<checkOut> {
+  OrderSeat? orderSeatKey;
+  RunTime? runtimee;
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  String? id_transaksi;
+  int totalnyaBro = 0;
+  String judulFilm = '';
+  int movieIDD = 0;
+  String pilihTanggal = '';
+  final ApiService apiService = ApiService();
+
+  // bool isReadmore = false;
+
+  @override
+  void initState() {
+    getUserID();
+    super.initState();
+    fetchData();
+  }
+
+  // Function to get the user ID
+  void getUserID() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUser = user;
+      });
+    }
+  }
+
+  Future<void> fetchData() async {
+    try {
+      movieIDD = widget.movieId;
+      pilihTanggal = widget.jamSelect;
+      RunTime runtimes = await apiService.getRuntimeMovies(widget.movieId);
+      setState(() {
+        runtimee = runtimes;
+        judulFilm = runtimee!.judul_film!;
+      });
+      print(runtimee);
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  String formatDuration(int totalMinutes) {
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
+
+    return '$hours h $minutes m';
+  }
+
+  int extractRating(String ratingString) {
+    // Assuming the input format is 'X/5'
+    List<String> parts = ratingString.split('/');
+    if (parts.length == 2) {
+      return int.tryParse(parts[0]) ?? 0;
+    }
+    return 0;
+  }
+
+  String ratingg(double rating) {
+    int roundedRating = (rating / 2).round();
+    return '$roundedRating/5';
+  }
+
+  String mapLanguageCodeToName(String languageCode) {
+    Map<String, String> languageMap = {
+      'en': 'English',
+      // Tambahkan entri untuk kode bahasa lainnya sesuai kebutuhan
+    };
+
+    return languageMap[languageCode] ?? 'Unknown';
+  }
+
+  OrderSeat orderSeatt = OrderSeat(
+    movieId: 0,
+    selectedDate: '',
+  ); // Sesuaikan dengan kelas dan konstruktor sebenarnya
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("chekout"),
+        // title: Text("chekout"),
+        title: Text(widget.totalHarga.toString()),
+        // title: Text("${widget.selectedSeats}"),
       ),
       body: ListView(
         children: [
@@ -37,10 +137,11 @@ class _checkOutState extends State<checkOut> {
                           color: primaryColor,
                         ),
                       ),
-                      const Align(
+                      Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'Checkout',
+                          // 'Checkout',
+                          "Selected Seats: ${widget.selectedSeats.map((seat) => seat.nomorKursi).join(', ')}",
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'Raleway',
@@ -57,6 +158,7 @@ class _checkOutState extends State<checkOut> {
                   height: MediaQuery.of(context).size.height * 0.35,
                   // width: MediaQuery.of(context).size.width * 1,
                   // color: Colors.amber,
+                  // 'https://image.tmdb.org/t/p/w500${runtimee?.poster_path}',
                   child: Row(
                     children: [
                       Container(
@@ -65,9 +167,12 @@ class _checkOutState extends State<checkOut> {
                         //
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
-                              image: AssetImage("assets/avatar.png"),
-                              fit: BoxFit.cover),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              'https://image.tmdb.org/t/p/w500${runtimee?.poster_path}',
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       SizedBox(width: 8),
@@ -82,13 +187,14 @@ class _checkOutState extends State<checkOut> {
                               Container(
                                 // height: MediaQuery.of(context).size.height * 0.04,
                                 // width: MediaQuery.of(context).size.width * 0.46,
-                                child: const Align(
+                                child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Wrap(
                                     children: <Widget>[
                                       Text(
-                                        'Avatar : The Way Of Water',
-                                        style: TextStyle(
+                                        '${runtimee?.judul_film}',
+                                        // 'Avatar : The Way Of Water',
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
                                           fontFamily: 'Raleway',
@@ -105,13 +211,14 @@ class _checkOutState extends State<checkOut> {
                                 margin: EdgeInsets.only(top: 10),
                                 // height: MediaQuery.of(context).size.height * 0.04,
                                 // width: MediaQuery.of(context).size.width * 0.46,
-                                child: const Align(
+                                child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Wrap(
                                     children: <Widget>[
                                       Text(
-                                        'Fantasy/Action - English',
-                                        style: TextStyle(
+                                        runtimee?.genre?.take(2).join(', ') ??
+                                            'No Genre',
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
                                           fontFamily: 'Raleway',
@@ -127,13 +234,13 @@ class _checkOutState extends State<checkOut> {
                                 margin: EdgeInsets.only(top: 15),
                                 // height: MediaQuery.of(context).size.height * 0.04,
                                 // width: MediaQuery.of(context).size.width * 0.46,
-                                child: const Align(
+                                child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Wrap(
                                     children: <Widget>[
                                       Text(
-                                        '3h 10min',
-                                        style: TextStyle(
+                                        formatDuration(runtimee?.runtime ?? 0),
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
                                           fontFamily: 'Raleway',
@@ -146,23 +253,25 @@ class _checkOutState extends State<checkOut> {
                                 ),
                               ),
                               Container(
-                                  margin: EdgeInsets.only(top: 15),
-                                  // height:MediaQuery.of(context).size.height * 0.04,
-                                  // width: MediaQuery.of(context).size.width * 0.46,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Wrap(
-                                      children: <Widget>[
-                                        for (int i = 0; i < 5; i++)
-                                          Icon(
-                                            Icons.star,
-                                            color: primaryColor,
-                                            size: 24,
-                                          ),
-                                      ],
-                                    ),
-                                )
-                              ),
+                                margin: EdgeInsets.only(top: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    children: <Widget>[
+                                      for (int i = 0;
+                                          i <
+                                              extractRating(ratingg(
+                                                  runtimee?.rating ?? 0));
+                                          i++)
+                                        Icon(
+                                          Icons.star,
+                                          color: primaryColor,
+                                          size: 24,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -219,13 +328,13 @@ class _checkOutState extends State<checkOut> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.03,
                             width: MediaQuery.of(context).size.width * 0.43,
-                            child: const Align(
+                            child: Align(
                               alignment: Alignment.centerRight,
                               child: Wrap(
                                 children: <Widget>[
                                   Text(
-                                    'IDR 75.000',
-                                    style: TextStyle(
+                                    'IDR ${widget.totalHarga.toString()}',
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
                                       fontFamily: 'Raleway',
@@ -313,11 +422,11 @@ class _checkOutState extends State<checkOut> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.03,
                             width: MediaQuery.of(context).size.width * 0.451,
-                            child: const Align(
+                            child: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                'IDR 80.000',
-                                style: TextStyle(
+                                '${widget.totalHarga + 5000}',
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
                                   fontFamily: 'Raleway',
@@ -393,10 +502,47 @@ class _checkOutState extends State<checkOut> {
                 Padding(
                   padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
                   child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => checkOutFail()),
+                    onTap: () async {
+                      // orderSeatt.callSaveSeatStatusToDatabase();
+                      //  orderSeatKey?.callSaveSeatStatusToDatabase();
+                      Seats tiket = Seats(
+                        harga: widget.totalHarga,
+                        akun: currentUser!.uid,
+                        gambar:
+                            'https://image.tmdb.org/t/p/w500${runtimee?.poster_path}',
+                        id_transaksi_ticket: Uuid().v4(),
+                        waktu: "${widget.tanggalSelect} ${widget.jamSelect}",
+                        kursi: widget.selectedSeats
+                            .map((seat) => seat.nomorKursi)
+                            .toList(),
+                        bioskop: "Bioskop ABC",
+                        namaFilm: "${runtimee?.judul_film}",
+                      );
+                      id_transaksi = tiket.id_transaksi_ticket as String?;
+
+                      //save orderseat di firebase                      
+                      bool saveSuccess = await widget.saveOrderSeat();
+
+                      // await widget.saveOrderSeat();
+
+                      // ignore: use_build_context_synchronously
+                      print("Status Save: $saveSuccess");
+                      if (saveSuccess) {
+                        tiket.saveToFirebase();
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                          context,
+                          // MaterialPageRoute(builder: (context) => checkOutFail()),
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutSucces(
+                              id_transaksi: id_transaksi ?? 'default_value',
+                              tanggalSelect: widget.tanggalSelect,
+                              jamSelect: widget.jamSelect,
+                              judulMovie: judulFilm,
+                            ),
+                          ),
                         );
+                      } else {}
                     },
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,

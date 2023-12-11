@@ -1,33 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myflutix/models/profileUser.dart';
+import 'package:myflutix/services/SaldoUser.dart';
 import 'TopupSuccess.dart';
 
-class ProfileUser {
-  final String email;
-  final String id_akun;
-  final int saldo;
-  final String username;
-  final String fotoProfile;
 
-  ProfileUser({
-    required this.email,
-    required this.id_akun,
-    required this.saldo,
-    required this.username,
-    required this.fotoProfile,
-  });
-
-  factory ProfileUser.fromMap(Map<String, dynamic> map) {
-    return ProfileUser(
-      email: map['email'] ?? '',
-      id_akun: map['id_akun'] ?? '',
-      saldo: (map['saldo'] ?? 0).toInt(),
-      username: map['username'] ?? '',
-      fotoProfile: map['fotoProfile'] ?? '',
-    );
-  }
-}
 
 class TopupPage extends StatefulWidget {
   @override
@@ -37,6 +15,8 @@ class TopupPage extends StatefulWidget {
 class _TopupPageState extends State<TopupPage> {
   int _customAmount = 0;
   int _selectedAmount = 0;
+  int topup = 0;  
+  saldoService saldosekarang = saldoService();
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +120,7 @@ class _TopupPageState extends State<TopupPage> {
                 onPressed: () {
                   int totalAmount = _customAmount + _selectedAmount;
                   topUpAndSaveToFirebase(totalAmount);
+                  saldosekarang.topUpAndSaveToFirebase(totalAmount, 0);
                 },
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -186,6 +167,7 @@ class _TopupPageState extends State<TopupPage> {
             .update({'saldo': newSaldo});
 
         // Menampilkan pesan sukses atau melakukan navigasi ke halaman selanjutnya
+
         print('Top-up berhasil. Saldo baru: $newSaldo');
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => TopupSuccess()),
