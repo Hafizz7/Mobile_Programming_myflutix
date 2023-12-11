@@ -119,6 +119,8 @@ class _MyWalletPageState extends State<MyWalletPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Dompet Saya'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -325,7 +327,7 @@ class TransactionCard extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               subtitle: Text(
-                '${ticket.date}\n${ticket.time}\n${ticket.seatNumber}',
+                '${ticket.date}\n${ticket.time}\n${ticket.seatNumber.join(', ')}',
                 style: TextStyle(color: Colors.white),
               ),
             ),

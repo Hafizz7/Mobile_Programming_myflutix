@@ -65,7 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future<void> updateProfileDataInFirestore(String imageUrl) async {
+  Future<void> updateProfileDataInFirestore() async {
     try {
       print('Start updating profile data');
       setState(() {
@@ -73,23 +73,49 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
 
       if (currentUser != null) {
+        // String? imageUrl = await profileService.uploadProfileImage(imagePath);
         DocumentReference userDocRef = FirebaseFirestore.instance
             .collection('id_akun')
             .doc(currentUser!.uid);
 
-        await userDocRef.update({
-          'username': namaController.text,
-          'fotoProfile': imageUrl,
-          'alamat': alamatController.text
-        });
+        // await userDocRef.update({
+        //   'username': namaController.text,
+        //   'fotoProfile': imageUrl,
+        //   'alamat': alamatController.text
+        // });
+
+        Map<String, dynamic> updateData = {};
+
+        if (namaController.text.isNotEmpty) {
+          updateData['username'] = namaController.text;
+        }
+
+        if (imagePath.isNotEmpty) {
+          String? imageUrl = await profileService.uploadProfileImage(imagePath);
+          if (imageUrl != null) {
+            updateData['fotoProfile'] = imageUrl;
+          } else {
+            print('Gagal mengunggah gambar profil');
+          }
+        }
+
+        if (alamatController.text.isNotEmpty) {
+          updateData['alamat'] = alamatController.text;
+        }
+        await userDocRef.update(updateData);
 
         print('Profile data updated successfully');
         setState(() {
-          isLoading = false;                        
-          successMessage = 'Data profil berhasil diperbarui!';
+          isLoading = false;          
         });
 
         print('Data profil berhasil diperbarui di Firestore');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Profil berhasil diperbarui!'),
+            duration: Duration(seconds: 3),
+          ),
+        );
       } else {
         print('Error: currentUser is null');
       }
@@ -118,7 +144,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         centerTitle: true,
         elevation: 0,
       ),
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           children: [
@@ -183,14 +209,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                String? imageUrl =
-                    await profileService.uploadProfileImage(imagePath);
-
-                if (imageUrl != null) {
-                  await updateProfileDataInFirestore(imageUrl);                  
-                } else {
-                  print('Gagal mengunggah gambar profil');
-                }
+                // String? imageUrl = await profileService.uploadProfileImage(imagePath);
+                await updateProfileDataInFirestore();
               },
               child: isLoading
                   ? CircularProgressIndicator() // Efek loading

@@ -74,27 +74,9 @@ class _profileState extends State<profile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "My Profile",
-          // userAktif!.uid,
-          style: TextStyle(fontSize: 15),
+          "My Profile",                     
         ),
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.black,
-            ),
-          ),
-        ],
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.arrow_back),
-        ),
+         centerTitle: true,
       ),
       body: Center(
         child: FutureBuilder(
@@ -127,7 +109,7 @@ class _profileState extends State<profile> {
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           image: DecorationImage(
                             image: NetworkImage(profileImageUrl ??
-                                'https://iili.io/JIwWrb9.jpg'),
+                                'https://iili.io/JTOJixI.png'),
                             fit: BoxFit.cover,
                           ),
                         ),

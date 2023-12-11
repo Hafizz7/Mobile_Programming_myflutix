@@ -82,7 +82,6 @@ class _MovieTicketSuccessScreen extends State<MovieTicketSuccessScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        
         body: isLoading
             ? Center(child: CircularProgressIndicator())
             : buildTicketContent(),
@@ -247,6 +246,17 @@ class _MovieTicketSuccessScreen extends State<MovieTicketSuccessScreen> {
                             );
                           }),
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 280,
+                              child: Image.asset('assets/Frame.png'),
+                            )
+
+                            // Image.asset('assets/Frame.png'),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -262,7 +272,10 @@ class _MovieTicketSuccessScreen extends State<MovieTicketSuccessScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () {},
-                        child: Text("Share Ticket"),
+                        child: Text(
+                          "Share Ticket",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
                               primaryColor), // Set the background color
@@ -289,7 +302,10 @@ class _MovieTicketSuccessScreen extends State<MovieTicketSuccessScreen> {
                             ),
                           );
                         },
-                        child: Text("Go to Home"),
+                        child: Text(
+                          "Go to Home",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
                               primaryColor), // Set the background color

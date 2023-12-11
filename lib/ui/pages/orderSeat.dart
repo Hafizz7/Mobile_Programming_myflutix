@@ -67,11 +67,12 @@ class _OrderSeatState extends State<OrderSeat> {
   void fetchData() async {
     ProfileUser profile = await dataku.getProfile(userAktif!.uid);
     if (jam.isNotEmpty) {
-      Tiket tiket = await getTiketFromFirebase(idFilm, widget.selectedDate, jam);
-      
+      Tiket tiket =
+          await getTiketFromFirebase(idFilm, widget.selectedDate, jam);
+
       setState(() {
-          profileKu = profile;
-          saldoWallet = profileKu?.saldo ?? 0;
+        profileKu = profile;
+        saldoWallet = profileKu?.saldo ?? 0;
         daftarkursiku = tiket.kursi.map((nomorKursi) {
           int index = tiket.kursi.indexOf(nomorKursi.toString());
           bool status = index != -1 ? tiket.status[index] : false;
@@ -95,59 +96,60 @@ class _OrderSeatState extends State<OrderSeat> {
   ];
 
   Future<bool> saveSeatStatusToDatabase() async {
-  totalHarga = calculateTotalHarga();
-  if (jam.isNotEmpty) {
-    // Memeriksa apakah saldo mencukupi
-    if (saldoWallet >= totalHarga) {
-      // Saldo cukup, lanjutkan dengan penyimpanan status kursi
-      Tiket tiket = await getTiketFromFirebase(idFilm, widget.selectedDate, jam);
+    totalHarga = calculateTotalHarga();
+    if (jam.isNotEmpty) {
+      // Memeriksa apakah saldo mencukupi
+      if (saldoWallet >= totalHarga) {
+        // Saldo cukup, lanjutkan dengan penyimpanan status kursi
+        Tiket tiket =
+            await getTiketFromFirebase(idFilm, widget.selectedDate, jam);
 
-      List<String> updatedKursiList = [];
-      List<bool> updatedStatusList = [];
+        List<String> updatedKursiList = [];
+        List<bool> updatedStatusList = [];
 
-      for (int i = 0; i < daftarkursiku.length; i++) {
-        updatedKursiList.add(daftarkursiku[i].nomorKursi);
-        updatedStatusList.add(daftarkursiku[i].statusKursi);
-        // Jika kursi dipilih, tambahkan harga tiket ke total
-        // if (daftarkursiku[i].statusKursi) {
-        //   totalHarga += daftarkursiku[i].harga;
-        // }
-      }
+        for (int i = 0; i < daftarkursiku.length; i++) {
+          updatedKursiList.add(daftarkursiku[i].nomorKursi);
+          updatedStatusList.add(daftarkursiku[i].statusKursi);
+          // Jika kursi dipilih, tambahkan harga tiket ke total
+          // if (daftarkursiku[i].statusKursi) {
+          //   totalHarga += daftarkursiku[i].harga;
+          // }
+        }
 
-      tiket.kursi = updatedKursiList;
-      tiket.status = updatedStatusList;
+        tiket.kursi = updatedKursiList;
+        tiket.status = updatedStatusList;
 
-      try {
-        await FirebaseFirestore.instance
-            .collection('id_film')
-            .doc(widget.movieId.toString())
-            .collection('tiket')
-            .doc(widget.selectedDate)
-            .collection('jam')
-            .doc(jam)
-            .set(tiket.toMap());
-        print('Status kursi berhasil disimpan di Firebase.');
-        
-        totalHarga = totalHarga + 5000;
-        selectedJam = jam;
-        print('Total Harga Tiket: $totalHarga');
-        print('Saldo Wallet: $saldoWallet');
-        int SaldoSekrang =  saldoWallet - totalHarga;
-        // Lakukan pengurangan saldo di sini
-        
-        dataku.topUpAndSaveToFirebase(SaldoSekrang);
-        print("Saldo AKhir: $SaldoSekrang");
-        riwayatSaldo.topUpAndSaveToFirebase(0, totalHarga);
-        return true; // Indicates a successful payment
-      } catch (error) {
-        print('Error saving seat status to Firebase: $error');
-        return false; // Indicates a failed payment
-      }
-    } else {
-      // Saldo tidak mencukupi
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
+        try {
+          await FirebaseFirestore.instance
+              .collection('id_film')
+              .doc(widget.movieId.toString())
+              .collection('tiket')
+              .doc(widget.selectedDate)
+              .collection('jam')
+              .doc(jam)
+              .set(tiket.toMap());
+          print('Status kursi berhasil disimpan di Firebase.');
+
+          totalHarga = totalHarga + 5000;
+          selectedJam = jam;
+          print('Total Harga Tiket: $totalHarga');
+          print('Saldo Wallet: $saldoWallet');
+          int SaldoSekrang = saldoWallet - totalHarga;
+          // Lakukan pengurangan saldo di sini
+
+          dataku.topUpAndSaveToFirebase(SaldoSekrang);
+          print("Saldo AKhir: $SaldoSekrang");
+          riwayatSaldo.topUpAndSaveToFirebase(0, totalHarga);
+          return true; // Indicates a successful payment
+        } catch (error) {
+          print('Error saving seat status to Firebase: $error');
+          return false; // Indicates a failed payment
+        }
+      } else {
+        // Saldo tidak mencukupi
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Checkout Gagal'),
               content: Text('Saldo tidak mencukupi untuk pembelian tiket.'),
@@ -161,57 +163,66 @@ class _OrderSeatState extends State<OrderSeat> {
               ],
             );
           },
-      );
-      return false; // Indicates a failed payment
+        );
+        return false; // Indicates a failed payment
+      }
     }
+
+    // Indicates a failed payment (for other cases)
+    return false;
   }
-
-  // Indicates a failed payment (for other cases)
-  return false;
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Select Time & Seat'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined, size: 40,color: primaryColor,), 
+          onPressed: () {          
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(20),
           child: ListView(
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.04,
-                width: MediaQuery.of(context).size.width * 1,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      left: -8,
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.arrow_circle_left_outlined),
-                        iconSize: 30,
-                        color: primaryColor,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        // 'Select Time & Seat',
-                        // widget.selectedDate,
-                        // "${profileKu?.saldo ?? '0'}",
-                        "$saldoWallet",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Raleway',
-                          fontWeight: FontWeight.w500,
-                          height: 0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   height: MediaQuery.of(context).size.height * 0.04,
+              //   width: MediaQuery.of(context).size.width * 1,
+              //   child: Stack(
+              //     alignment: Alignment.center,
+              //     children: [
+              //       Positioned(
+              //         left: -8,
+              //         child: IconButton(
+              //           onPressed: () {},
+              //           icon: Icon(Icons.arrow_circle_left_outlined),
+              //           iconSize: 30,
+              //           color: primaryColor,
+              //         ),
+              //       ),
+              //       Align(
+              //         alignment: Alignment.center,
+              //         child: Text(
+              //           // 'Select Time & Seat',
+              //           // widget.selectedDate,
+              //           // "${profileKu?.saldo ?? '0'}",
+              //           "$saldoWallet",
+              //           style: TextStyle(
+              //             color: Colors.black,
+              //             fontFamily: 'Raleway',
+              //             fontWeight: FontWeight.w500,
+              //             height: 0,
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.10,
                 width: MediaQuery.of(context).size.width * 1,
@@ -553,10 +564,10 @@ Widget buildContentItem(daftarKursi item) {
   //  print('Item selected: ${item.slect}');
 
   if (item.slect) {
-    kursiColor = Colors.red;
+    kursiColor = Color(0xFF6558F5);
     textColor = Colors.white;
   } else if (item.statusKursi) {
-    kursiColor = const Color.fromARGB(255, 87, 87, 87);
+    kursiColor = const Color(0xFF0E1629);
     textColor = const Color.fromARGB(255, 255, 255, 255);
   } else {
     kursiColor = const Color.fromARGB(255, 184, 183, 183);

@@ -25,56 +25,54 @@ class _LoginState extends State<Login> {
   final TextEditingController _ctrlPassword = TextEditingController();
 
   Future<void> _login() async {
-    // final user = FirebaseAuth.instance.currentUser;
     try {
       String? userUid = await _auth.login(
         _ctrlEmail.text,
         _ctrlPassword.text,
       );
-      // print('Successfully logged in. User UID: $userUid');
       showSuccessSnackbar();
       if (userUid != null) {
         Navigator.pushReplacementNamed(context, '/bottomNav');
       }
     } catch (e) {
-      // if (user != null && !user.emailVerified) {
-      //   try {
-      //     await user.sendEmailVerification();
-      //     print('Email verifikasi telah dikirim. Periksa kotak masuk Anda.');
-      //   } catch (e) {
-      //     print('Gagal mengirim ulang email verifikasi: $e');
-      //   }
-      // }
+      tampilkanPeringatanLoginGagal();
       print('Login failed: $e');
-    }    
-  }
-  void showSuccessSnackbar() {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Registrasi berhasil!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
     }
+  }
+
+  void showSuccessSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Login berhasil!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Center(        
         child: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,                                          
               children: [
                 Text(
-                  "Login",
+                  "Welcome Back,Explorer!",
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
+                   textAlign: TextAlign.left, 
                 ),
+                SizedBox(height: 60,),
+                Container(
+                  child: Image.asset('assets/Login Logo.png'),
+                ),
+                SizedBox(height: 20,),
                 TextFormField(
                   controller: _ctrlEmail,
                   validator: (value) {
@@ -84,7 +82,10 @@ class _LoginState extends State<Login> {
                     return null;
                   },
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(                      
+                      borderRadius:
+                          BorderRadius.circular(20), 
+                    ),
                     hintText: 'Email',
                   ),
                 ),
@@ -99,7 +100,10 @@ class _LoginState extends State<Login> {
                     return null;
                   },
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(                      
+                      borderRadius:
+                          BorderRadius.circular(20), 
+                    ),
                     hintText: 'Password',
                   ),
                 ),

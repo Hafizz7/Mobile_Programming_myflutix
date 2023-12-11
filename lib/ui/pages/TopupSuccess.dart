@@ -31,10 +31,7 @@ class TopupSuccess extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()),
-                    );
+                    Navigator.pushReplacementNamed(context, '/bottomNav');
                   },
                   child: Text(
                     "Go To Home",

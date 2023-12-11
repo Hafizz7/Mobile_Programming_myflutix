@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: CircleAvatar(
                         radius: 21,
                         backgroundImage: NetworkImage(
-                            profileImageUrl ?? 'https://iili.io/JIwWrb9.jpg'),
+                            profileImageUrl ?? 'https://iili.io/JTOJixI.png'),
                       ),
                     ),
                     SizedBox(width: 20),

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Auth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
- Future<String?> login(String email, String password) async {
+  Future<String?> login(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -60,15 +60,14 @@ class Auth {
   }
 
   Stream<User?> get onAuthStateChanged => _auth.authStateChanges();
-}
+  void getUserID() {
+    User? user = FirebaseAuth.instance.currentUser;
 
-void getUserID() {
-  User? user = FirebaseAuth.instance.currentUser;
-
-  if (user != null) {
-    String userID = user.uid;
-    print('User ID: $userID');
-  } else {
-    print('Tidak ada pengguna yang login.');
-  }
+    if (user != null) {
+      String userID = user.uid;
+      print('User ID: $userID');
+    } else {
+      print('Tidak ada pengguna yang login.');
+    }
+  }  
 }

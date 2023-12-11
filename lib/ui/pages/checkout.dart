@@ -112,47 +112,21 @@ class _checkOutState extends State<checkOut> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text("chekout"),
-        title: Text(widget.totalHarga.toString()),
-        // title: Text("${widget.selectedSeats}"),
+        title: Text('Checkout'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined, size: 40,color: primaryColor,), 
+          onPressed: () {          
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        left: -8,
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.arrow_circle_left_outlined),
-                          iconSize: 30,
-                          color: primaryColor,
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          // 'Checkout',
-                          "Selected Seats: ${widget.selectedSeats.map((seat) => seat.nomorKursi).join(', ')}",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              children: [                
                 SizedBox(height: 20),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.35,

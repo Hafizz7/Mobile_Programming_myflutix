@@ -96,6 +96,8 @@ class _MyTicketPageState extends State<MyTicketPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('My Tickets'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: <Widget>[

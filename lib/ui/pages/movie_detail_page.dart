@@ -140,10 +140,7 @@ class _MyMovieDetailPageState extends State<MyMovieDetailPage> {
   Widget detailPage() {
     return Scaffold(
       body: ListView(
-        children: <Widget>[
-          Container(
-            child: Text("Movie ID: ${widget.movieId}"),
-          ),
+        children: <Widget>[          
           Container(
             width: MediaQuery.of(context).size.width,
             height: 235,

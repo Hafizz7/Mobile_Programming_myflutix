@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:myflutix/auth/AUTH.dart';
 import 'package:myflutix/models/profileUser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myflutix/models/saldo.dart';
 
 import 'Login.dart';
 import 'package:flutter/material.dart';
@@ -71,14 +72,18 @@ class _RegisState extends State<Regis> {
 
     // Simpan data pengguna ke Firestore
     ProfileUser profileUser = ProfileUser(
+      alamat: '',
       email: email,
       id_akun: userId ?? '',
       saldo: 0,
       username: username,
-      fotoProfile: profileImageUrl ?? 'https://iili.io/JIwWrb9.jpg',
+      fotoProfile: profileImageUrl ?? 'https://iili.io/JTOJixI.png',
     );
+    SaldoUserModels saldonya =
+        SaldoUserModels(pengeluaran: 0, topup: 0, id_akun: userId ?? '');
 
     try {
+      saldonya.saveToFirebase();
       profileUser.saveToFirebase();
       print('Data berhasil disimpan ke Firestore');
       setState(() => _loading = false);
@@ -91,7 +96,7 @@ class _RegisState extends State<Regis> {
     if (!_formKey.currentState!.validate()) return;
     final email = _ctrlEmail.value.text;
     final password = _ctrlPassword.value.text;
-    setState(() => _loading = true);    
+    setState(() => _loading = true);
     // final isEmailUsed = await Auth().checkEmailUsage(email);
     // if (isEmailUsed) {
     //   // ignore: use_build_context_synchronously
@@ -119,16 +124,17 @@ class _RegisState extends State<Regis> {
     await Auth().regis(email, password);
     uploadfoto();
     setState(() => _loading = false);
-     showSuccessSnackbar();
+    showSuccessSnackbar();
   }
+
   void showSuccessSnackbar() {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('Registrasi berhasil!'),
-      duration: Duration(seconds: 2),
-    ),
-  );
-}
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Registrasi berhasil!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,19 +159,18 @@ class _RegisState extends State<Regis> {
                     Stack(
                       children: [
                         Container(
-                          width: 130, // Set your preferred size
+                          width: 130,
                           height: 130,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.grey[300], // Set your preferred color
+                            color: Colors.grey[300],
                             image: DecorationImage(
-                              // You can use a placeholder image or leave it empty
                               image: _imageFile != null
                                   ? FileImage(_imageFile!)
                                   : NetworkImage(
                                       _ctrlProfileImageURL.text.isNotEmpty
                                           ? _ctrlProfileImageURL.text
-                                          : 'https://iili.io/JIwWrb9.jpg',
+                                          : 'https://iili.io/JTOJixI.png',
                                     ) as ImageProvider,
                               fit: BoxFit.cover,
                             ),
@@ -199,7 +204,9 @@ class _RegisState extends State<Regis> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         hintText: 'Username',
                       ),
                     ),
@@ -213,7 +220,9 @@ class _RegisState extends State<Regis> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         hintText: 'Email',
                       ),
                     ),
@@ -228,7 +237,9 @@ class _RegisState extends State<Regis> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         hintText: 'Password',
                       ),
                     ),
@@ -243,7 +254,9 @@ class _RegisState extends State<Regis> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         hintText: 'Confirm Password',
                       ),
                     ),

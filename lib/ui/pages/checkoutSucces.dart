@@ -113,18 +113,7 @@ class _CheckoutSuccesState extends State<CheckoutSucces> {
                   padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => checkOut(
-                                  movieId: 0,
-                                  selectedSeats: [],
-                                  tanggalSelect: "",
-                                  jamSelect: "",
-                                  totalHarga: 0,
-                                  saveOrderSeat: () {},
-                                )),
-                      );
+                      Navigator.pushReplacementNamed(context, '/bottomNav');
                     },
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,
