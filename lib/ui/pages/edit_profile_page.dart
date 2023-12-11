@@ -1,11 +1,13 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myflutix/services/getProfileFoto.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myflutix/ui/pages/my_profile_page.dart';
 
 class MyEditProfilePage extends StatelessWidget {
-  const MyEditProfilePage({super.key});
+  const MyEditProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +15,17 @@ class MyEditProfilePage extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: EditProfilePage(),
     );
   }
 }
+
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  const EditProfilePage({Key? key}) : super(key: key);
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -32,18 +36,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController namaController = TextEditingController();
   TextEditingController alamatController = TextEditingController();
   String profileImageUrl = "";
-  String imagePath = ""; 
+  String imagePath = "";
+  User? currentUser;
+  String successMessage = "";
+  bool isLoading = false;
 
-  // String? profileImageUrl;
-
-  // Future<void> loadProfileImage() async {
-  //   String? url = await ambilFoto.getProfileImageUrl();
-  //   if (url != null) {
-  //     setState(() {
-  //       profileImageUrl = url;
-  //     });
-  //   }
-  
   Future<void> loadProfileImage() async {
     String? url = await profileService.getProfileImageUrl();
     if (url != null) {
@@ -52,10 +49,58 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
     }
   }
+
   void initState() {
     super.initState();
     loadProfileImage();
+    getUserID();
   }
+
+  void getUserID() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUser = user;
+      });
+    }
+  }
+
+  Future<void> updateProfileDataInFirestore(String imageUrl) async {
+    try {
+      print('Start updating profile data');
+      setState(() {
+        isLoading = true;
+      });
+
+      if (currentUser != null) {
+        DocumentReference userDocRef = FirebaseFirestore.instance
+            .collection('id_akun')
+            .doc(currentUser!.uid);
+
+        await userDocRef.update({
+          'username': namaController.text,
+          'fotoProfile': imageUrl,
+          'alamat': alamatController.text
+        });
+
+        print('Profile data updated successfully');
+        setState(() {
+          isLoading = false;                        
+          successMessage = 'Data profil berhasil diperbarui!';
+        });
+
+        print('Data profil berhasil diperbarui di Firestore');
+      } else {
+        print('Error: currentUser is null');
+      }
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
+      print('Error updating profile data: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +118,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         centerTitle: true,
         elevation: 0,
       ),
+      backgroundColor: Colors.white, 
       body: Center(
         child: Column(
           children: [
@@ -107,7 +153,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                       IconButton(
                         onPressed: () async {
-                          // Pilih sumber gambar dari galeri
                           final pickedFile = await ImagePicker()
                               .getImage(source: ImageSource.gallery);
 
@@ -138,29 +183,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                // Mendapatkan URL gambar dari Firebase Storage
                 String? imageUrl =
                     await profileService.uploadProfileImage(imagePath);
 
-                // Lakukan tindakan yang sesuai dengan URL gambar, misalnya memperbarui data profil di Firestore
                 if (imageUrl != null) {
-                  // Contoh: Memperbarui data profil pengguna di Firestore
-                  await updateProfileDataInFirestore(imageUrl);
-
-                  // Kembali ke halaman sebelumnya setelah berhasil memperbarui
-                  Navigator.pop(context);
+                  await updateProfileDataInFirestore(imageUrl);                  
                 } else {
-                  // Gagal mengunggah gambar profil
                   print('Gagal mengunggah gambar profil');
                 }
               },
-              child: Text(
-                "Update Now",
-                style: TextStyle(color: Colors.black),
-              ),
+              child: isLoading
+                  ? CircularProgressIndicator() // Efek loading
+                  : Text(
+                      "Update Now",
+                      style: TextStyle(color: Colors.black),
+                    ),
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.blueAccent),
+                backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
               ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              successMessage,
+              style: TextStyle(color: Colors.green, fontSize: 20),
             ),
           ],
         ),
@@ -168,13 +215,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // Metode untuk memperbarui data profil pengguna di Firestore
-  Future<void> updateProfileDataInFirestore(String imageUrl) async {
-    // Gantilah dengan logika untuk memperbarui data profil pengguna di Firestore
-    // (Misalnya menggunakan package cloud_firestore)
-  }
-
-  // Widget untuk membangun TextField yang seragam
   Widget buildTextField(
       TextEditingController controller, String hintText, IconData icon) {
     return Row(

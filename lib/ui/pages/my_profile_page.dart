@@ -127,7 +127,7 @@ class _profileState extends State<profile> {
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           image: DecorationImage(
                             image: NetworkImage(profileImageUrl ??
-                                'https://iili.io/ytxAUx.png'),
+                                'https://iili.io/JIwWrb9.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),
