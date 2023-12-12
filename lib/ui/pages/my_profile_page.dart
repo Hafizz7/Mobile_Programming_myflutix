@@ -48,8 +48,7 @@ class _profileState extends State<profile> {
 
   Future<void> _logout() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Login()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
   }
 
   void initState() {
@@ -74,9 +73,9 @@ class _profileState extends State<profile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "My Profile",                     
+          "My Profile",
         ),
-         centerTitle: true,
+        centerTitle: true,
       ),
       body: Center(
         child: FutureBuilder(
@@ -317,10 +316,8 @@ class _profileState extends State<profile> {
                         width: 16,
                       ),
                       GestureDetector(
-                        onTap: () async {
+                        onTap: () async {                          
                           await _logout();
-                          // Setelah logout, navigasi kembali ke halaman login atau halaman lain yang sesuai
-                          // Contoh: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
                         },
                         child: Text(
                           "Log Out",

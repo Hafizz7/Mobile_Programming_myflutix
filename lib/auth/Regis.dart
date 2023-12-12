@@ -93,38 +93,45 @@ class _RegisState extends State<Regis> {
   }
 
   handleSubmit() async {
-    if (!_formKey.currentState!.validate()) return;
-    final email = _ctrlEmail.value.text;
-    final password = _ctrlPassword.value.text;
-    setState(() => _loading = true);
-    // final isEmailUsed = await Auth().checkEmailUsage(email);
-    // if (isEmailUsed) {
-    //   // ignore: use_build_context_synchronously
-    //   showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return AlertDialog(
-    //         title: Text('Error'),
-    //         content: Text('Email sudah digunakan. Silakan gunakan email lain.'),
-    //         actions: [
-    //           TextButton(
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //             },
-    //             child: Text('OK'),
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
+    try {
+      if (!_formKey.currentState!.validate()) return;
+      final email = _ctrlEmail.value.text;
+      final password = _ctrlPassword.value.text;
+      setState(() => _loading = true);
+      final isEmailUsed = await Auth().checkEmailUsage(email);
+      if (isEmailUsed) {
+        // ignore: use_build_context_synchronously
+        showEmailSudahDigunakan();
 
-    //   setState(() => _loading = false);
-    //   return;
-    // }
-    await Auth().regis(email, password);
-    uploadfoto();
-    setState(() => _loading = false);
-    showSuccessSnackbar();
+        setState(() => _loading = false);
+        return;
+      }
+      await Auth().regis(email, password);
+      uploadfoto();
+      setState(() => _loading = false);
+      showSuccessSnackbar();
+    } catch (e) {
+      setState(() => _loading = false);
+      showFailedLogin();
+    }
+  }
+
+  void showEmailSudahDigunakan() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Email sudah digunakan. Silakan gunakan email lain.'),
+        duration: Duration(seconds: 4),
+      ),
+    );
+  }
+
+void showFailedLogin() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Registrasi Gagal. Silahkan Cek Email atau Confirm Password Anda'),
+        duration: Duration(seconds: 4),
+      ),
+    );
   }
 
   void showSuccessSnackbar() {

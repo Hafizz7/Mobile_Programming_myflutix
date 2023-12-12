@@ -62,16 +62,16 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                   label: "Home",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.heart),
-                  label: "Favorites",
+                  icon: Icon(CupertinoIcons.tickets),
+                  label: "Ticket",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.add),
-                  label: "Add",
+                  icon: Icon(Icons.wallet),
+                  label: "Wallet",
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.person),
-                  label: "About",
+                  label: "User",
                 ),
               ],
               activeColor: Theme.of(context).iconTheme.color,

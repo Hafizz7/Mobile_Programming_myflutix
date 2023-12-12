@@ -489,7 +489,7 @@ class _checkOutState extends State<checkOut> {
                         kursi: widget.selectedSeats
                             .map((seat) => seat.nomorKursi)
                             .toList(),
-                        bioskop: "Bioskop ABC",
+                        bioskop: "SCP XXI",
                         namaFilm: "${runtimee?.judul_film}",
                       );
                       id_transaksi = tiket.id_transaksi_ticket as String?;

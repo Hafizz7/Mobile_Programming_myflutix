@@ -198,20 +198,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Row(
                         children: [
                           Container(
+                            width: 75,
+                            alignment: Alignment.centerRight,
                             child: Text(profileKu?.alamat ?? 'Kosong'),
-                          ),
-                          SizedBox(
-                            width: 2,
-                          ),
+                          ),                          
                           InkWell(
                             onTap: () {
                               _logout();
                             },
                             child: Container(
+                              padding: EdgeInsets.only(left: 8),
                               child: Icon(
                                 Icons.notifications,
                                 size: 24,
-                                color: Colors.black,
+                                color: Color.fromARGB(255, 0, 0, 0),
                               ),
                             ),
                           )

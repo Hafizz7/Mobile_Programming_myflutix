@@ -50,7 +50,7 @@ class _MovieTicketSuccessScreen extends State<MovieTicketSuccessScreen> {
   bool isLoading = true;
   late List<String> dateDanJam;
 
-  String bioskop = "Bioskop ABC";
+  String bioskop = "SCP XXI";
   List<Seats> transaksi = [];
   Future<Seats> fetchData() async {
     try {
