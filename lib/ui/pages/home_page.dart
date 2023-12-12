@@ -201,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: 75,
                             alignment: Alignment.centerRight,
                             child: Text(profileKu?.alamat ?? 'Kosong'),
-                          ),                          
+                          ),
                           InkWell(
                             onTap: () {
                               _logout();
@@ -225,11 +225,31 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
               child: Container(
-                height: 30,
+                height: 35,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                     side: const BorderSide(width: 1),
                     borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                child: const Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.search,
+                          color: Color.fromARGB(255, 0, 0, 0)), 
+                      SizedBox(width: 8),
+                      
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText:
+                                'Search', 
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
