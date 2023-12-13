@@ -162,7 +162,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   children: [
                     Container(
-                      // width: 120,
                       height: 120,
                       margin: EdgeInsets.only(left: 2, top: 4),
                       child: CircleAvatar(
@@ -198,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Row(
                         children: [
                           Container(
-                            width: 75,
+                            // width: 75,
                             alignment: Alignment.centerRight,
                             child: Text(profileKu?.alamat ?? 'Kosong'),
                           ),
@@ -209,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Container(
                               padding: EdgeInsets.only(left: 8),
                               child: Icon(
-                                Icons.notifications,
+                                Icons.logout,
                                 size: 24,
                                 color: Color.fromARGB(255, 0, 0, 0),
                               ),
