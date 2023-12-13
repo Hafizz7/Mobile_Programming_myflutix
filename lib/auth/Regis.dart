@@ -93,26 +93,24 @@ class _RegisState extends State<Regis> {
   }
 
   handleSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+    final email = _ctrlEmail.value.text;
+    final password = _ctrlPassword.value.text;
+    setState(() => _loading = true);
+    final isEmailUsed = await Auth().checkEmailUsage(email);
+    if (isEmailUsed) {
+      showEmailSudahDigunakan();
+      setState(() => _loading = false);
+      return;
+    }
     try {
-      if (!_formKey.currentState!.validate()) return;
-      final email = _ctrlEmail.value.text;
-      final password = _ctrlPassword.value.text;
-      setState(() => _loading = true);
-      final isEmailUsed = await Auth().checkEmailUsage(email);
-      if (isEmailUsed) {
-        // ignore: use_build_context_synchronously
-        showEmailSudahDigunakan();
-
-        setState(() => _loading = false);
-        return;
-      }
       await Auth().regis(email, password);
       uploadfoto();
       setState(() => _loading = false);
       showSuccessSnackbar();
     } catch (e) {
-      setState(() => _loading = false);
       showFailedLogin();
+      setState(() => _loading = false);
     }
   }
 
@@ -125,10 +123,11 @@ class _RegisState extends State<Regis> {
     );
   }
 
-void showFailedLogin() {
+  void showFailedLogin() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Registrasi Gagal. Silahkan Cek Email atau Confirm Password Anda'),
+        content: Text(
+            'Registrasi Gagal. Silahkan coba lagi'),
         duration: Duration(seconds: 4),
       ),
     );

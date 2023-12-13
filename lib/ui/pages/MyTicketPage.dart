@@ -100,11 +100,7 @@ class _MyTicketPageState extends State<MyTicketPage> {
         automaticallyImplyLeading: false,
       ),
       body: Column(
-        children: <Widget>[
-          Container(
-// child: myTickets,
-            child: Text(currentUser?.uid ?? 'Not logged in'),
-          ),
+        children: <Widget>[          
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(

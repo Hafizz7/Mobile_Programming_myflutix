@@ -42,9 +42,7 @@ class Auth {
   // }
 
   Future<bool> checkEmailUsage(String email) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: "dummy_password");
+    try {      
       return false;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
