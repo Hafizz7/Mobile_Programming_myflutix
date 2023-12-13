@@ -1,9 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:myflutix/api/api_service.dart';
 import 'package:myflutix/const/app_color.dart';
+import 'package:myflutix/models/profileUser.dart';
 import 'package:myflutix/models/runtime.dart';
+import 'package:myflutix/models/saldo.dart';
 import 'package:myflutix/models/seats.dart';
+import 'package:myflutix/services/SaldoUser.dart';
+import 'package:myflutix/ui/pages/MyWallet.dart';
 import 'package:myflutix/ui/pages/checkoutSucces.dart';
 import 'package:myflutix/ui/pages/orderSeat.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +19,7 @@ class checkOut extends StatefulWidget {
   final String tanggalSelect;
   final String jamSelect;
   final Function saveOrderSeat;
+  
 
   final List<daftarKursi> selectedSeats;
 
@@ -39,7 +45,10 @@ class _checkOutState extends State<checkOut> {
   int movieIDD = 0;
   String pilihTanggal = '';
   final ApiService apiService = ApiService();
-
+  saldoService hisrotySaldo = saldoService();
+   int Saldoku = 0;
+  
+  
   // bool isReadmore = false;
 
   @override
@@ -64,7 +73,9 @@ class _checkOutState extends State<checkOut> {
       movieIDD = widget.movieId;
       pilihTanggal = widget.jamSelect;
       RunTime runtimes = await apiService.getRuntimeMovies(widget.movieId);
+      ProfileUser profile = await getProfile(currentUser!.uid);
       setState(() {
+        Saldoku = profile.saldo;
         runtimee = runtimes;
         judulFilm = runtimee!.judul_film!;
       });
@@ -307,7 +318,7 @@ class _checkOutState extends State<checkOut> {
                               child: Wrap(
                                 children: <Widget>[
                                   Text(
-                                    'IDR ${widget.totalHarga.toString()}',
+                                    'Rp ${NumberFormat("#,##0", "id_ID").format(widget.totalHarga)}',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -354,7 +365,7 @@ class _checkOutState extends State<checkOut> {
                             child: const Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                'IDR 5.000',
+                                'RP 5.000',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -399,7 +410,7 @@ class _checkOutState extends State<checkOut> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                '${widget.totalHarga + 5000}',
+                                'Rp ${NumberFormat("#,##0", "id_ID").format(widget.totalHarga + 5000)}',
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -456,11 +467,12 @@ class _checkOutState extends State<checkOut> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.03,
                         width: MediaQuery.of(context).size.width * 0.451,
-                        child: const Align(
+                        child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            'IDR 100.000',
-                            style: TextStyle(
+                            // '${saldosekarang.getSaldo(currentUser)}',                                                           
+                            'Rp ${NumberFormat("#,##0", "id_ID").format(Saldoku ?? 0) ?? 'Rp 0'}',
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 14,
                               fontFamily: 'Raleway',

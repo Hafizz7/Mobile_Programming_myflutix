@@ -283,8 +283,8 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 20,
             ),
             CarouselSlider.builder(
-              // itemCount: movies.length,
-              itemCount: 5,
+              itemCount: movies.length,
+              // itemCount: 5,
               itemBuilder: (context, index, realIndex) {
                 if (movies.isEmpty) {
                   return Center(
