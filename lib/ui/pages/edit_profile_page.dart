@@ -106,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
         print('Profile data updated successfully');
         setState(() {
-          isLoading = false;          
+          isLoading = false;
         });
 
         print('Data profil berhasil diperbarui di Firestore');
@@ -137,7 +137,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyProfilePage(),
+                ));
           },
           icon: Icon(Icons.arrow_back),
         ),

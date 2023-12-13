@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           )),
                           Container(
-                            child: Text(profileKu?.saldo.toString() ?? '0'),
+                            child: Text(NumberFormat.currency(locale: 'id_ID', symbol: 'Rp').format(profileKu?.saldo ?? 0)),
                           )
                         ],
                       ),

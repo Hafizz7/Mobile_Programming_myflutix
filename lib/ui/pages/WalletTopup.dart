@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:myflutix/models/profileUser.dart';
 import 'package:myflutix/services/SaldoUser.dart';
 import 'TopupSuccess.dart';
@@ -99,8 +100,7 @@ class _TopupPageState extends State<TopupPage> {
                               isSelected ? Colors.white : Colors.black,
                             ),
                           ),
-                          child: Text(
-                            "Rp ${nominalOptions[index].toString()}",
+                          child: Text("Rp ${NumberFormat("#,##0", "id_ID").format(nominalOptions[index])}"
                           ),
                         ),
                       ),
@@ -111,7 +111,7 @@ class _TopupPageState extends State<TopupPage> {
               ],
             ),
           ),
-          Text("Jumlah yang akan ditop-up: Rp ${_customAmount + _selectedAmount}"),
+          Text("Jumlah yang akan ditop-up: Rp ${NumberFormat("#,##0", "id_ID").format(_customAmount + _selectedAmount)}"),
           FractionallySizedBox(
             widthFactor: 0.8,
             child: Padding(

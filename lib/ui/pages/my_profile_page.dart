@@ -136,8 +136,7 @@ class _profileState extends State<profile> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            MyEditProfilePage(),
+                                        builder: (context) =>MyEditProfilePage(),
                                       ));
                                 },
                                 icon: Icon(Icons.mode_edit),

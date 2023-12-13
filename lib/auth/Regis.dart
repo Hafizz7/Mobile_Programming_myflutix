@@ -182,25 +182,19 @@ class _RegisState extends State<Regis> {
                             ),
                           ),
                         ),
-                        Positioned(
-                          bottom: 0,
-                          right: 50,
-                          child: Container(
-                            width: 35,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.amber,
-                              shape: BoxShape.circle,
-                            ),
+                        Positioned(                          
+                          top: 90,
+                          right: 40,                                                                              
                             child: IconButton(
-                              icon: Icon(Icons.add),
+                              // icon: Icon(Icons.add_circle_sharp, size: 35,),
+                              icon: Image.asset('assets/icoon plush.png', height: 30, width: 30,),
                               onPressed: _pickImage,
                             ),
-                          ),
+                          
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 20),
                     TextFormField(
                       controller: _ctrlUsername,
                       validator: (value) {
