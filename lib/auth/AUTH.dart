@@ -45,7 +45,7 @@ class Auth {
     try {      
       return false;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
+      if (e.code == 'Email Telah Digunakan') {
         return true;
       }
       return false;
